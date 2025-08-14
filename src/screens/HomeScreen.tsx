@@ -305,29 +305,57 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Reviews</Text>
           <View style={styles.reviewWidget}>
-            <View style={styles.reviewSummary}>
+            {/* Header with Rating tab and Total Reviews badge */}
+            <View style={styles.reviewHeader}>
+              <View style={styles.ratingTab}>
+                <Text style={styles.ratingTabText}>Rating</Text>
+                <Ionicons name="information-circle-outline" size={16} color="#6B7280" style={styles.infoIcon} />
+              </View>
+              <View style={styles.totalReviewsBadge}>
+                <Text style={styles.totalReviewsText}>Total Reviews 145</Text>
+              </View>
+            </View>
+
+            {/* Large rating display */}
+            <View style={styles.ratingDisplayContainer}>
               <Text style={styles.ratingValue}>4.90</Text>
               <View style={styles.starsContainer}>
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <Ionicons key={star} name="star" size={16} color="#FCD34D" />
+                  <Ionicons key={star} name="star" size={20} color="#FCD34D" />
                 ))}
               </View>
-              <Text style={styles.totalReviews}>145 Reviews</Text>
             </View>
-            <View style={styles.reviewBreakdown}>
+
+            {/* Review breakdown */}
+            <View style={styles.ratingBreakdownContainer}>
+              <Text style={styles.reviewLabel}>Review</Text>
+              
               {ratingBreakdown.map((rating) => (
                 <View key={rating.stars} style={styles.ratingRow}>
-                  <Text style={styles.starNumber}>{rating.stars}★</Text>
-                  <View style={styles.progressBar}>
-                    <View style={[styles.progressFill, { width: `${rating.percentage}%` }]} />
+                  <View style={styles.ratingRowLeft}>
+                    <Text style={styles.starNumber}>{rating.stars}</Text>
+                    <Ionicons name="star" size={16} color="#FCD34D" />
                   </View>
-                  <Text style={styles.percentageText}>{rating.percentage}%</Text>
+                  <View style={styles.progressBarContainer}>
+                    <View style={styles.progressBarBackground}>
+                      <View 
+                        style={[
+                          styles.progressBarFill, 
+                          { 
+                            width: `${rating.percentage}%`,
+                            backgroundColor: rating.percentage > 0 ? '#FCD34D' : '#E5E7EB'
+                          }
+                        ]} 
+                      />
+                    </View>
+                  </View>
+                  <Text style={styles.percentageText}>{rating.percentage} %</Text>
                 </View>
               ))}
             </View>
-            <TouchableOpacity style={styles.replyButton} onPress={handleReplyPress}>
-              <Ionicons name="chatbubble-outline" size={16} color="#2563EB" />
-              <Text style={styles.replyButtonText}>7 Pending Replies</Text>
+
+            <TouchableOpacity style={styles.checkAllReviewsButton} onPress={handleReplyPress}>
+              <Text style={styles.checkAllReviewsButtonText}>Check All Reviews</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -622,15 +650,45 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  reviewSummary: {
+  reviewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+  },
+  ratingTab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  ratingTabText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  infoIcon: {
+    marginLeft: 8,
+  },
+  totalReviewsBadge: {
+    backgroundColor: '#6B7280',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  totalReviewsText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  ratingDisplayContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
   },
   ratingValue: {
-    fontSize: 32,
+    fontSize: 48,
     fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 8,
@@ -639,55 +697,61 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 8,
   },
-  totalReviews: {
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  reviewBreakdown: {
+  ratingBreakdownContainer: {
     marginBottom: 20,
+  },
+  reviewLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 16,
   },
   ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  ratingRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 40,
   },
   starNumber: {
     fontSize: 14,
     color: '#374151',
-    width: 30,
+    marginRight: 4,
   },
-  progressBar: {
+  progressBarContainer: {
     flex: 1,
-    height: 8,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 4,
     marginHorizontal: 12,
   },
-  progressFill: {
+  progressBarBackground: {
+    height: 8,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 4,
+  },
+  progressBarFill: {
     height: '100%',
-    backgroundColor: '#FCD34D',
     borderRadius: 4,
   },
   percentageText: {
     fontSize: 14,
     color: '#374151',
-    width: 40,
+    width: 50,
     textAlign: 'right',
   },
-  replyButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F3F4F6',
+  checkAllReviewsButton: {
+    borderWidth: 2,
+    borderColor: '#2563EB',
     borderRadius: 8,
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
+    alignItems: 'center',
   },
-  replyButtonText: {
+  checkAllReviewsButtonText: {
     color: '#2563EB',
-    fontSize: 14,
-    fontWeight: '500',
-    marginLeft: 8,
+    fontSize: 16,
+    fontWeight: '600',
   },
 
   gridWidget: {
