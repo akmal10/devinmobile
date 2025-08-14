@@ -118,7 +118,6 @@ export default function AuditScreen() {
     }
   ]);
 
-  const [selectedFilter, setSelectedFilter] = useState('All');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
   const [selectedTimePeriod, setSelectedTimePeriod] = useState('All Time');
@@ -158,11 +157,7 @@ export default function AuditScreen() {
   const auditScore = 85;
   const lastRunTime = 'Jul 20, 2025';
   
-  const filteredRecommendations = selectedFilter === 'All' 
-    ? recommendations 
-    : recommendations.filter(r => r.priority === selectedFilter.replace(' Priority', ''));
-
-  const filters = ['All', 'High Priority', 'Medium Priority', 'Low Priority'];
+  const filteredRecommendations = recommendations;
   const timePeriods = ['All Time', 'This Month', 'Last Month', '3M', '6M', '1Y'];
   
   const businessSummaryData = [
@@ -305,32 +300,15 @@ export default function AuditScreen() {
             </View>
           </View>
           
-          {/* Filter Tabs */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
-            {filters.map((filter) => (
-              <TouchableOpacity
-                key={filter}
-                style={[
-                  styles.filterTab,
-                  selectedFilter === filter && styles.filterTabActive
-                ]}
-                onPress={() => setSelectedFilter(filter)}
-              >
-                <Text style={[
-                  styles.filterTabText,
-                  selectedFilter === filter && styles.filterTabTextActive
-                ]}>
-                  {filter}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+          <DateFilter
+            selectedPeriod={selectedPeriod}
+            onPeriodChange={handlePeriodChange}
+            comparisonEnabled={comparisonEnabled}
+            onComparisonToggle={handleComparisonToggle}
+          />
 
           {/* Recommendation Cards */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cardsContainer}>
-            <TouchableOpacity style={styles.navArrow}>
-              <Ionicons name="chevron-back" size={24} color="#6B7280" />
-            </TouchableOpacity>
+          <View style={styles.cardsContainer}>
             {filteredRecommendations.map((recommendation) => (
               <RecommendationCard
                 key={recommendation.id}
@@ -344,10 +322,7 @@ export default function AuditScreen() {
                 onDismiss={handleDismiss}
               />
             ))}
-            <TouchableOpacity style={styles.navArrow}>
-              <Ionicons name="chevron-forward" size={24} color="#6B7280" />
-            </TouchableOpacity>
-          </ScrollView>
+          </View>
         </View>
 
         {/* Business Summary */}
@@ -625,42 +600,18 @@ const styles = StyleSheet.create({
   counterIcon: {
     marginHorizontal: 4,
   },
-  filterContainer: {
-    marginBottom: 16,
-  },
-  filterTab: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#F3F4F6',
-    marginRight: 8,
-  },
-  filterTabActive: {
-    backgroundColor: '#2563EB',
-  },
-  filterTabText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#6B7280',
-  },
-  filterTabTextActive: {
-    color: '#fff',
-  },
   cardsContainer: {
     flexDirection: 'row',
-  },
-  navArrow: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 40,
-    height: 200,
+    flexWrap: 'wrap',
+    gap: 16,
+    marginTop: 16,
   },
   recommendationCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
-    marginRight: 12,
-    width: 280,
+    marginRight: 16,
+    width: 350,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
