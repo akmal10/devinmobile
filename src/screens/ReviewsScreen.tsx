@@ -298,6 +298,50 @@ export default function ReviewsScreen() {
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Sentiment Breakdown */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Sentiment Breakdown</Text>
+          
+          <View style={styles.sentimentCard}>
+            {/* Donut Chart */}
+            <View style={styles.chartContainer}>
+              <View style={styles.donutChart}>
+                <View style={[styles.donutSegment, styles.positiveSegment]} />
+                <View style={[styles.donutSegment, styles.negativeSegment]} />
+                <View style={[styles.donutSegment, styles.neutralSegment]} />
+                <View style={styles.donutCenter} />
+              </View>
+            </View>
+
+            {/* Sentiment Data Cards */}
+            <View style={styles.sentimentDataContainer}>
+              <View style={styles.sentimentDataRow}>
+                <View style={styles.sentimentIndicator}>
+                  <View style={[styles.sentimentDot, { backgroundColor: '#1E3A8A' }]} />
+                  <Text style={styles.sentimentLabel}>Positive</Text>
+                </View>
+                <Text style={styles.sentimentValue}>300</Text>
+              </View>
+              
+              <View style={styles.sentimentDataRow}>
+                <View style={styles.sentimentIndicator}>
+                  <View style={[styles.sentimentDot, { backgroundColor: '#10B981' }]} />
+                  <Text style={styles.sentimentLabel}>Negative</Text>
+                </View>
+                <Text style={styles.sentimentValue}>120</Text>
+              </View>
+              
+              <View style={styles.sentimentDataRow}>
+                <View style={styles.sentimentIndicator}>
+                  <View style={[styles.sentimentDot, { backgroundColor: '#3B82F6' }]} />
+                  <Text style={styles.sentimentLabel}>Neutral</Text>
+                </View>
+                <Text style={styles.sentimentValue}>2,349</Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </ScrollView>
 
       {/* Read More Modal */}
@@ -696,5 +740,95 @@ const styles = StyleSheet.create({
     color: '#2563EB',
     fontSize: 16,
     fontWeight: '500',
+  },
+  sentimentCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  chartContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  donutChart: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    position: 'relative',
+    backgroundColor: '#1E3A8A',
+    overflow: 'hidden',
+  },
+  donutSegment: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderRadius: 60,
+  },
+  positiveSegment: {
+    backgroundColor: '#1E3A8A',
+    transform: [{ rotate: '0deg' }],
+  },
+  negativeSegment: {
+    backgroundColor: '#10B981',
+    transform: [{ rotate: '40deg' }],
+    width: '30%',
+    height: '30%',
+    top: '10%',
+    left: '35%',
+  },
+  neutralSegment: {
+    backgroundColor: '#3B82F6',
+    transform: [{ rotate: '120deg' }],
+    width: '60%',
+    height: '60%',
+    top: '20%',
+    left: '20%',
+  },
+  donutCenter: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#fff',
+    top: 30,
+    left: 30,
+  },
+  sentimentDataContainer: {
+    gap: 16,
+  },
+  sentimentDataRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  sentimentIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sentimentDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 8,
+  },
+  sentimentLabel: {
+    fontSize: 16,
+    color: '#374151',
+    fontWeight: '500',
+  },
+  sentimentValue: {
+    fontSize: 16,
+    color: '#1F2937',
+    fontWeight: '600',
   },
 });
