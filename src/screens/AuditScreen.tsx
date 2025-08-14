@@ -118,6 +118,7 @@ export default function AuditScreen() {
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState('All Time');
 
   const handleAlertsPress = () => {
     console.log('Alerts pressed');
@@ -149,6 +150,104 @@ export default function AuditScreen() {
     : recommendations.filter(r => r.priority === selectedFilter.replace(' Priority', ''));
 
   const filters = ['All', 'High Priority', 'Medium Priority', 'Low Priority'];
+  const timePeriods = ['All Time', 'This Month', 'Last Month', '3M', '6M', '1Y'];
+  
+  const businessSummaryData = [
+    {
+      id: 'rating',
+      title: 'Rating',
+      value: '4.94',
+      subtitle: '145 Reviews',
+      icon: 'star',
+      iconColor: '#FCD34D'
+    },
+    {
+      id: 'categories',
+      title: 'Categories',
+      value: '10.0',
+      subtitle: 'Average Categories',
+      icon: 'list',
+      iconColor: '#2563EB'
+    },
+    {
+      id: 'photos',
+      title: 'Photos',
+      value: '74',
+      subtitle: '0 New\nLifetime',
+      icon: 'camera',
+      iconColor: '#2563EB'
+    },
+    {
+      id: 'products',
+      title: 'Products',
+      value: '3',
+      subtitle: '0 New\nLifetime',
+      icon: 'cube',
+      iconColor: '#2563EB'
+    },
+    {
+      id: 'services',
+      title: 'Services',
+      value: '34',
+      subtitle: '0 New\nLifetime',
+      icon: 'construct',
+      iconColor: '#2563EB'
+    },
+    {
+      id: 'visibility',
+      title: 'Visibility Score',
+      value: '32%',
+      subtitle: '0.00%\nAcross 20 Keywords',
+      icon: 'eye',
+      iconColor: '#2563EB'
+    }
+  ];
+
+  const businessActivityData = [
+    {
+      id: 'total-views',
+      title: 'Total views',
+      value: '2,567',
+      subtitle: '▲ 20% from april',
+      isHighlighted: true,
+      changePositive: true
+    },
+    {
+      id: 'website-visits',
+      title: 'Visited your website',
+      value: '567',
+      subtitle: '▲ 20% from april',
+      changePositive: true
+    },
+    {
+      id: 'calls',
+      title: 'Called you',
+      value: '80',
+      subtitle: '▲ 20% from april',
+      changePositive: true
+    },
+    {
+      id: 'directions',
+      title: 'Asked for direction',
+      value: '123',
+      subtitle: '▼ 20% from april',
+      changePositive: false
+    },
+    {
+      id: 'post-views',
+      title: 'Post views',
+      value: '489',
+      subtitle: '▼ 20% from april',
+      changePositive: false
+    },
+    {
+      id: 'post-clicks',
+      title: 'Post clicks',
+      value: '42',
+      subtitle: '▲ 20% from april',
+      changePositive: true
+    }
+  ];
 
   return (
     <View style={styles.container}>
@@ -230,6 +329,102 @@ export default function AuditScreen() {
               <Ionicons name="chevron-forward" size={24} color="#6B7280" />
             </TouchableOpacity>
           </ScrollView>
+        </View>
+
+        {/* Business Summary */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Business Summary</Text>
+          
+          {/* Time Period Filter Tabs */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.timePeriodContainer}>
+            {timePeriods.map((period) => (
+              <TouchableOpacity
+                key={period}
+                style={[
+                  styles.timePeriodTab,
+                  selectedTimePeriod === period && styles.timePeriodTabActive
+                ]}
+                onPress={() => setSelectedTimePeriod(period)}
+              >
+                <Text style={[
+                  styles.timePeriodTabText,
+                  selectedTimePeriod === period && styles.timePeriodTabTextActive
+                ]}>
+                  {period}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          {/* Business Summary Widgets Grid */}
+          <View style={styles.summaryGrid}>
+            {businessSummaryData.map((item) => (
+              <View key={item.id} style={styles.summaryWidget}>
+                <View style={styles.summaryWidgetHeader}>
+                  <Text style={styles.summaryWidgetTitle}>{item.title}</Text>
+                </View>
+                <View style={styles.summaryWidgetContent}>
+                  <Text style={styles.summaryWidgetValue}>{item.value}</Text>
+                  {item.id === 'rating' && (
+                    <Ionicons name="star" size={20} color="#FCD34D" style={styles.starIcon} />
+                  )}
+                </View>
+                <Text style={styles.summaryWidgetSubtitle}>{item.subtitle}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Business Activity */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Business Activity</Text>
+          
+          {/* Time Period Filter Tabs */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.timePeriodContainer}>
+            {timePeriods.map((period) => (
+              <TouchableOpacity
+                key={period}
+                style={[
+                  styles.timePeriodTab,
+                  selectedTimePeriod === period && styles.timePeriodTabActive
+                ]}
+                onPress={() => setSelectedTimePeriod(period)}
+              >
+                <Text style={[
+                  styles.timePeriodTabText,
+                  selectedTimePeriod === period && styles.timePeriodTabTextActive
+                ]}>
+                  {period}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          {/* Business Activity Widgets Grid */}
+          <View style={styles.activityGrid}>
+            {businessActivityData.map((item) => (
+              <View 
+                key={item.id} 
+                style={[
+                  styles.activityWidget,
+                  item.isHighlighted && styles.activityWidgetHighlighted
+                ]}
+              >
+                <View style={styles.activityWidgetHeader}>
+                  <Text style={styles.activityWidgetTitle}>{item.title}</Text>
+                </View>
+                <View style={styles.activityWidgetContent}>
+                  <Text style={styles.activityWidgetValue}>{item.value}</Text>
+                </View>
+                <Text style={[
+                  styles.activityWidgetSubtitle,
+                  item.changePositive ? styles.positiveChange : styles.negativeChange
+                ]}>
+                  {item.subtitle}
+                </Text>
+              </View>
+            ))}
+          </View>
         </View>
 
         {/* Business Profile Summary */}
@@ -546,6 +741,126 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  timePeriodContainer: {
+    marginBottom: 20,
+  },
+  timePeriodTab: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#F3F4F6',
+    marginRight: 8,
+  },
+  timePeriodTabActive: {
+    backgroundColor: '#E5E7EB',
+  },
+  timePeriodTabText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  timePeriodTabTextActive: {
+    color: '#1F2937',
+  },
+  summaryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  summaryWidget: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    width: '48%',
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  summaryWidgetHeader: {
+    marginBottom: 8,
+  },
+  summaryWidgetTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  summaryWidgetContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  summaryWidgetValue: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#2563EB',
+  },
+  starIcon: {
+    marginLeft: 4,
+  },
+  summaryWidgetSubtitle: {
+    fontSize: 12,
+    color: '#6B7280',
+    lineHeight: 16,
+  },
+  activityGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  activityWidget: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    width: '48%',
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  activityWidgetHighlighted: {
+    borderColor: '#2563EB',
+    borderWidth: 2,
+  },
+  activityWidgetHeader: {
+    marginBottom: 8,
+  },
+  activityWidgetTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  activityWidgetContent: {
+    marginBottom: 4,
+  },
+  activityWidgetValue: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  activityWidgetSubtitle: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '500',
+  },
+  positiveChange: {
+    color: '#10B981',
+  },
+  negativeChange: {
+    color: '#EF4444',
   },
   profileCard: {
     backgroundColor: '#fff',
