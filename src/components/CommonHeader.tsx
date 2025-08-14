@@ -10,6 +10,7 @@ interface CommonHeaderProps {
 }
 
 const LOCATIONS = [
+  'Mumbai',
   'New York',
   'Los Angeles', 
   'Chicago',
@@ -41,19 +42,20 @@ export default function CommonHeader({
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
-      <View style={styles.leftSection}>
+      <View style={styles.logoSection}>
         <Image 
           source={require('../../assets/logo.png')} 
           style={styles.logo}
           resizeMode="contain"
         />
-        <TouchableOpacity style={styles.locationPill} onPress={handleLocationPress}>
-          <Text style={styles.locationText} numberOfLines={1}>
-            {selectedLocation}
-          </Text>
-          <Ionicons name="chevron-down" size={16} color="#666" />
-        </TouchableOpacity>
       </View>
+
+      <TouchableOpacity style={styles.locationPill} onPress={handleLocationPress}>
+        <Text style={styles.locationText} numberOfLines={1}>
+          {selectedLocation}
+        </Text>
+        <Ionicons name="chevron-down" size={18} color="#666" />
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.alertsButton} onPress={onAlertsPress}>
         <Ionicons name="notifications-outline" size={24} color="#2563EB" />
@@ -115,37 +117,37 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingBottom: 8,
+    paddingBottom: 12,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
-  leftSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
+  logoSection: {
+    width: 44,
+    alignItems: 'flex-start',
   },
   logo: {
     width: 32,
     height: 32,
-    marginRight: 12,
   },
   locationPill: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#f8f9fa',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    maxWidth: '60%',
-    minHeight: 44,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    flex: 1,
+    marginHorizontal: 16,
+    minHeight: 50,
+    justifyContent: 'center',
   },
   locationText: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#2563EB',
     fontWeight: '600',
     marginRight: 8,
-    flex: 1,
+    textAlign: 'center',
   },
   alertsButton: {
     position: 'relative',
