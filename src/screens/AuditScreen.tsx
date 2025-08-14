@@ -120,7 +120,6 @@ export default function AuditScreen() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState('All Time');
 
   const handleAlertsPress = () => {
     console.log('Alerts pressed');
@@ -158,7 +157,6 @@ export default function AuditScreen() {
   const lastRunTime = 'Jul 20, 2025';
   
   const filteredRecommendations = recommendations;
-  const timePeriods = ['All Time', 'This Month', 'Last Month', '3M', '6M', '1Y'];
   
   const businessSummaryData = [
     {
@@ -329,26 +327,12 @@ export default function AuditScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Business Summary</Text>
           
-          {/* Time Period Filter Tabs */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.timePeriodContainer}>
-            {timePeriods.map((period) => (
-              <TouchableOpacity
-                key={period}
-                style={[
-                  styles.timePeriodTab,
-                  selectedTimePeriod === period && styles.timePeriodTabActive
-                ]}
-                onPress={() => setSelectedTimePeriod(period)}
-              >
-                <Text style={[
-                  styles.timePeriodTabText,
-                  selectedTimePeriod === period && styles.timePeriodTabTextActive
-                ]}>
-                  {period}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+          <DateFilter
+            selectedPeriod={selectedPeriod}
+            onPeriodChange={handlePeriodChange}
+            comparisonEnabled={comparisonEnabled}
+            onComparisonToggle={handleComparisonToggle}
+          />
 
           {/* Business Summary Widgets Grid */}
           <View style={styles.summaryGrid}>
@@ -373,26 +357,12 @@ export default function AuditScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Business Activity</Text>
           
-          {/* Time Period Filter Tabs */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.timePeriodContainer}>
-            {timePeriods.map((period) => (
-              <TouchableOpacity
-                key={period}
-                style={[
-                  styles.timePeriodTab,
-                  selectedTimePeriod === period && styles.timePeriodTabActive
-                ]}
-                onPress={() => setSelectedTimePeriod(period)}
-              >
-                <Text style={[
-                  styles.timePeriodTabText,
-                  selectedTimePeriod === period && styles.timePeriodTabTextActive
-                ]}>
-                  {period}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+          <DateFilter
+            selectedPeriod={selectedPeriod}
+            onPeriodChange={handlePeriodChange}
+            comparisonEnabled={comparisonEnabled}
+            onComparisonToggle={handleComparisonToggle}
+          />
 
           {/* Business Activity Widgets Grid */}
           <View style={styles.activityGrid}>
@@ -711,27 +681,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
-  },
-  timePeriodContainer: {
-    marginBottom: 20,
-  },
-  timePeriodTab: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#F3F4F6',
-    marginRight: 8,
-  },
-  timePeriodTabActive: {
-    backgroundColor: '#E5E7EB',
-  },
-  timePeriodTabText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#6B7280',
-  },
-  timePeriodTabTextActive: {
-    color: '#1F2937',
   },
   summaryGrid: {
     flexDirection: 'row',
