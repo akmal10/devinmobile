@@ -289,14 +289,7 @@ export default function AuditScreen() {
 
         {/* Recommendations */}
         <View style={styles.section}>
-          <View style={styles.recommendationHeader}>
-            <Text style={styles.sectionTitle}>Recommendation</Text>
-            <View style={styles.counterBadge}>
-              <Text style={styles.counterText}>211</Text>
-              <Ionicons name="bar-chart" size={16} color="#fff" style={styles.counterIcon} />
-              <Text style={styles.counterText}>35</Text>
-            </View>
-          </View>
+          <Text style={styles.sectionTitle}>Recommendation</Text>
           
           <DateFilter
             selectedPeriod={selectedPeriod}
@@ -306,7 +299,7 @@ export default function AuditScreen() {
           />
 
           {/* Recommendation Cards */}
-          <View style={styles.cardsContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cardsContainer}>
             {filteredRecommendations.map((recommendation) => (
               <RecommendationCard
                 key={recommendation.id}
@@ -320,7 +313,7 @@ export default function AuditScreen() {
                 onDismiss={handleDismiss}
               />
             ))}
-          </View>
+          </ScrollView>
         </View>
 
         {/* Business Summary */}
@@ -548,32 +541,7 @@ const styles = StyleSheet.create({
     color: '#1F2937',
     marginBottom: 12,
   },
-  recommendationHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  counterBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2563EB',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  counterText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  counterIcon: {
-    marginHorizontal: 4,
-  },
   cardsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
     marginTop: 16,
   },
   recommendationCard: {
