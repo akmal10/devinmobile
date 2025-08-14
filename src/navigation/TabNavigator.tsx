@@ -33,14 +33,25 @@ export default function TabNavigator() {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: '#2563EB',
+        tabBarInactiveTintColor: '#8E8E93',
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
+          backgroundColor: '#fff',
+          borderTopWidth: 1,
+          borderTopColor: '#f0f0f0',
           paddingBottom: 8,
           paddingTop: 8,
           height: 60,
+          shadowColor: '#2563EB',
+          shadowOffset: {
+            width: 0,
+            height: -2,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+          elevation: 5,
         },
       })}
     >

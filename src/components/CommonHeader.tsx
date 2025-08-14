@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useLocation } from '../contexts/LocationContext';
 
 interface CommonHeaderProps {
   onAlertsPress: () => void;
@@ -26,7 +27,7 @@ export default function CommonHeader({
   alertsCount = 3,
 }: CommonHeaderProps) {
   const insets = useSafeAreaInsets();
-  const [selectedLocation, setSelectedLocation] = useState('Select Location');
+  const { selectedLocation, setSelectedLocation } = useLocation();
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const handleLocationSelect = (location: string) => {
@@ -40,16 +41,23 @@ export default function CommonHeader({
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
-      <TouchableOpacity style={styles.locationPill} onPress={handleLocationPress}>
-        <Text style={styles.locationLabel}>Location</Text>
-        <Text style={styles.locationText} numberOfLines={1}>
-          {selectedLocation}
-        </Text>
-        <Ionicons name="chevron-down" size={16} color="#666" />
-      </TouchableOpacity>
+      <View style={styles.leftSection}>
+        <Image 
+          source={require('../../assets/logo.png')} 
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        <TouchableOpacity style={styles.locationPill} onPress={handleLocationPress}>
+          <Text style={styles.locationLabel}>Location</Text>
+          <Text style={styles.locationText} numberOfLines={1}>
+            {selectedLocation}
+          </Text>
+          <Ionicons name="chevron-down" size={16} color="#666" />
+        </TouchableOpacity>
+      </View>
 
       <TouchableOpacity style={styles.alertsButton} onPress={onAlertsPress}>
-        <Ionicons name="notifications-outline" size={24} color="#333" />
+        <Ionicons name="notifications-outline" size={24} color="#2563EB" />
         {alertsCount > 0 && (
           <View style={styles.badge}>
             <Text style={styles.badgeText}>
@@ -113,6 +121,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
+  leftSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  logo: {
+    width: 32,
+    height: 32,
+    marginRight: 12,
+  },
   locationPill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -120,13 +138,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
-    maxWidth: '70%',
+    maxWidth: '60%',
     minHeight: 44,
   },
   locationLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: '#2563EB',
     marginRight: 8,
   },
   locationText: {
@@ -147,7 +165,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 6,
     right: 6,
-    backgroundColor: '#ff3b30',
+    backgroundColor: '#FCD34D',
     borderRadius: 10,
     minWidth: 20,
     height: 20,
@@ -156,7 +174,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   badgeText: {
-    color: '#fff',
+    color: '#1F2937',
     fontSize: 12,
     fontWeight: '600',
   },
