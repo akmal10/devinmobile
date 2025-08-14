@@ -48,7 +48,6 @@ export default function CommonHeader({
           resizeMode="contain"
         />
         <TouchableOpacity style={styles.locationPill} onPress={handleLocationPress}>
-          <Text style={styles.locationLabel}>Location</Text>
           <Text style={styles.locationText} numberOfLines={1}>
             {selectedLocation}
           </Text>
@@ -141,15 +140,10 @@ const styles = StyleSheet.create({
     maxWidth: '60%',
     minHeight: 44,
   },
-  locationLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2563EB',
-    marginRight: 8,
-  },
   locationText: {
     fontSize: 14,
-    color: '#666',
+    color: '#2563EB',
+    fontWeight: '600',
     marginRight: 8,
     flex: 1,
   },
