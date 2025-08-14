@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CommonHeader from '../components/CommonHeader';
+import DateFilter from '../components/DateFilter';
+import { useDate } from '../contexts/DateContext';
 
 interface KPICardProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -79,8 +81,25 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ icon, title, timeAgo, onVie
 );
 
 export default function HomeScreen() {
+  const { 
+    selectedPeriod, 
+    setSelectedPeriod, 
+    comparisonEnabled, 
+    setComparisonEnabled 
+  } = useDate();
+
   const handleAlertsPress = () => {
     console.log('Alerts pressed');
+  };
+
+  const handlePeriodChange = (period: string) => {
+    setSelectedPeriod(period);
+    console.log('Date period changed to:', period);
+  };
+
+  const handleComparisonToggle = (enabled: boolean) => {
+    setComparisonEnabled(enabled);
+    console.log('Comparison mode:', enabled);
   };
 
   const handleUnrepliedReviews = () => {
@@ -109,17 +128,23 @@ export default function HomeScreen() {
         onAlertsPress={handleAlertsPress}
         alertsCount={3}
       />
+      <DateFilter 
+        selectedPeriod={selectedPeriod}
+        onPeriodChange={handlePeriodChange}
+        comparisonEnabled={comparisonEnabled}
+        onComparisonToggle={handleComparisonToggle}
+      />
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         {/* KPI Strip */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Last 7 Days</Text>
+          <Text style={styles.sectionTitle}>{selectedPeriod}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.kpiStrip}>
-            <KPICard icon="chatbubble" label="New Reviews" value="24" delta="+12%" deltaType="up" />
-            <KPICard icon="star" label="Avg Rating" value="4.2" delta="-0.1" deltaType="down" />
-            <KPICard icon="call" label="Calls" value="156" delta="+8%" deltaType="up" />
-            <KPICard icon="navigate" label="Directions" value="89" delta="+15%" deltaType="up" />
-            <KPICard icon="trending-up" label="Grid Rank Δ" value="+3" delta="↑2" deltaType="up" />
-            <KPICard icon="checkmark-circle" label="Audit Score" value="85%" delta="+5%" deltaType="up" />
+            <KPICard icon="chatbubble" label="New Reviews" value="24" delta={comparisonEnabled ? "+12%" : "+12%"} deltaType="up" />
+            <KPICard icon="star" label="Avg Rating" value="4.2" delta={comparisonEnabled ? "-0.1" : "-0.1"} deltaType="down" />
+            <KPICard icon="call" label="Calls" value="156" delta={comparisonEnabled ? "+8%" : "+8%"} deltaType="up" />
+            <KPICard icon="navigate" label="Directions" value="89" delta={comparisonEnabled ? "+15%" : "+15%"} deltaType="up" />
+            <KPICard icon="trending-up" label="Grid Rank Δ" value="+3" delta={comparisonEnabled ? "↑2" : "↑2"} deltaType="up" />
+            <KPICard icon="checkmark-circle" label="Audit Score" value="85%" delta={comparisonEnabled ? "+5%" : "+5%"} deltaType="up" />
           </ScrollView>
         </View>
 

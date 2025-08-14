@@ -4,15 +4,18 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import TabNavigator from './src/navigation/TabNavigator';
 import { LocationProvider } from './src/contexts/LocationContext';
+import { DateProvider } from './src/contexts/DateContext';
 
 export default function App() {
   return (
     <SafeAreaProvider>
       <LocationProvider>
-        <NavigationContainer>
-          <TabNavigator />
-          <StatusBar style="auto" />
-        </NavigationContainer>
+        <DateProvider>
+          <NavigationContainer>
+            <TabNavigator />
+            <StatusBar style="auto" />
+          </NavigationContainer>
+        </DateProvider>
       </LocationProvider>
     </SafeAreaProvider>
   );

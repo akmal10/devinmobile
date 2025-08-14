@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CommonHeader from '../components/CommonHeader';
-import AllReviewsScreen from './AllReviewsScreen';
+import DateFilter from '../components/DateFilter';
+import { useDate } from '../contexts/DateContext';
 
 interface RecommendationCardProps {
   id: string;
@@ -47,6 +48,12 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
 };
 
 export default function ReviewsScreen() {
+  const { 
+    selectedPeriod, 
+    setSelectedPeriod, 
+    comparisonEnabled, 
+    setComparisonEnabled 
+  } = useDate();
   const [recommendations] = useState([
     {
       id: '1',
@@ -81,6 +88,16 @@ export default function ReviewsScreen() {
 
   const handleAlertsPress = () => {
     console.log('Alerts pressed');
+  };
+
+  const handlePeriodChange = (period: string) => {
+    setSelectedPeriod(period);
+    console.log('Date period changed to:', period);
+  };
+
+  const handleComparisonToggle = (enabled: boolean) => {
+    setComparisonEnabled(enabled);
+    console.log('Comparison mode:', enabled);
   };
 
   const handleReadMore = (id: string) => {
@@ -156,7 +173,14 @@ export default function ReviewsScreen() {
   ];
 
   if (showAllReviews) {
-    return <AllReviewsScreen onBack={handleBackToReviews} />;
+    return (
+      <View style={styles.container}>
+        <Text style={styles.sectionTitle}>All Reviews Screen - Coming Soon</Text>
+        <TouchableOpacity onPress={handleBackToReviews}>
+          <Text style={styles.sectionTitle}>← Back to Reviews</Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (
@@ -164,6 +188,12 @@ export default function ReviewsScreen() {
       <CommonHeader
         onAlertsPress={handleAlertsPress}
         alertsCount={3}
+      />
+      <DateFilter 
+        selectedPeriod={selectedPeriod}
+        onPeriodChange={handlePeriodChange}
+        comparisonEnabled={comparisonEnabled}
+        onComparisonToggle={handleComparisonToggle}
       />
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         {/* Overview Cards */}
