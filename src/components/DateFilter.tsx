@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Animated, Dimensions, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Calendar } from 'react-native-calendars';
 
 interface DateFilterProps {
   selectedPeriod?: string;
@@ -36,9 +37,87 @@ export default function DateFilter({
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
   const [selectedComparison, setSelectedComparison] = useState('None');
   const [slideAnim] = useState(new Animated.Value(screenHeight));
+  
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+  const [markedDates, setMarkedDates] = useState({});
+
+  const formatDateRange = (start: string, end: string) => {
+    if (!start || !end) return 'Custom Range…';
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const startFormatted = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const endFormatted = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `${startFormatted} - ${endFormatted}`;
+  };
 
   const handlePeriodSelect = (period: string) => {
-    onPeriodChange?.(period);
+    if (period === 'Custom Range…') {
+      setShowCalendar(true);
+    } else {
+      setShowCalendar(false);
+      setStartDate('');
+      setEndDate('');
+      setMarkedDates({});
+      onPeriodChange?.(period);
+    }
+  };
+
+  const handleDayPress = (day: any) => {
+    const dateString = day.dateString;
+    
+    if (!startDate || (startDate && endDate)) {
+      setStartDate(dateString);
+      setEndDate('');
+      setMarkedDates({
+        [dateString]: {
+          startingDay: true,
+          color: '#2563EB',
+          textColor: 'white'
+        }
+      });
+    } else if (startDate && !endDate) {
+      if (dateString < startDate) {
+        setStartDate(dateString);
+        setEndDate(startDate);
+        setMarkedDates(createMarkedDates(dateString, startDate));
+      } else {
+        setEndDate(dateString);
+        setMarkedDates(createMarkedDates(startDate, dateString));
+      }
+    }
+  };
+
+  const createMarkedDates = (start: string, end: string) => {
+    const marked: any = {};
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    
+    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+      const dateString = d.toISOString().split('T')[0];
+      if (dateString === start) {
+        marked[dateString] = { startingDay: true, color: '#2563EB', textColor: 'white' };
+      } else if (dateString === end) {
+        marked[dateString] = { endingDay: true, color: '#2563EB', textColor: 'white' };
+      } else {
+        marked[dateString] = { color: '#EBF4FF', textColor: '#2563EB' };
+      }
+    }
+    return marked;
+  };
+
+  const handleBackToPresets = () => {
+    setShowCalendar(false);
+  };
+
+  const handleApplyCustomRange = () => {
+    if (startDate && endDate) {
+      const customRangeText = formatDateRange(startDate, endDate);
+      onPeriodChange?.(customRangeText);
+      setShowCalendar(false);
+      handleClose();
+    }
   };
 
   const handleComparisonSelect = (comparison: string) => {
@@ -70,13 +149,21 @@ export default function DateFilter({
   };
 
   const handleApply = () => {
-    handleClose();
+    if (showCalendar) {
+      handleApplyCustomRange();
+    } else {
+      handleClose();
+    }
   };
 
   const handleClear = () => {
     onPeriodChange?.('Last 7 Days');
     setSelectedComparison('None');
     onComparisonToggle?.(false);
+    setShowCalendar(false);
+    setStartDate('');
+    setEndDate('');
+    setMarkedDates({});
   };
 
   return (
@@ -123,56 +210,104 @@ export default function DateFilter({
                 contentContainerStyle={styles.sheetContentContainer}
                 showsVerticalScrollIndicator={false}
               >
-                <Text style={styles.sectionLabel}>Date Range</Text>
-                {DATE_PERIODS.map((period) => (
-                  <TouchableOpacity
-                    key={period}
-                    style={[
-                      styles.optionItem,
-                      selectedPeriod === period && styles.selectedOption
-                    ]}
-                    onPress={() => handlePeriodSelect(period)}
-                  >
-                    <Text style={[
-                      styles.optionText,
-                      selectedPeriod === period && styles.selectedOptionText
-                    ]}>
-                      {period}
-                    </Text>
-                    {selectedPeriod === period && (
-                      <Ionicons name="checkmark" size={20} color="#2563EB" />
+                {showCalendar ? (
+                  <View>
+                    <View style={styles.calendarHeader}>
+                      <TouchableOpacity onPress={handleBackToPresets} style={styles.backButton}>
+                        <Ionicons name="chevron-back" size={20} color="#2563EB" />
+                        <Text style={styles.backButtonText}>Back</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.calendarTitle}>Select Date Range</Text>
+                    </View>
+                    
+                    <Calendar
+                      onDayPress={handleDayPress}
+                      markingType={'period'}
+                      markedDates={markedDates}
+                      theme={{
+                        selectedDayBackgroundColor: '#2563EB',
+                        selectedDayTextColor: '#ffffff',
+                        todayTextColor: '#2563EB',
+                        dayTextColor: '#1F2937',
+                        textDisabledColor: '#d9d9d9',
+                        arrowColor: '#2563EB',
+                        monthTextColor: '#1F2937',
+                        indicatorColor: '#2563EB',
+                        textDayFontWeight: '500',
+                        textMonthFontWeight: '600',
+                        textDayHeaderFontWeight: '500',
+                      }}
+                    />
+                    
+                    {startDate && endDate && (
+                      <View style={styles.selectedRangeContainer}>
+                        <Text style={styles.selectedRangeText}>
+                          Selected: {formatDateRange(startDate, endDate)}
+                        </Text>
+                      </View>
                     )}
-                  </TouchableOpacity>
-                ))}
+                  </View>
+                ) : (
+                  <View>
+                    <Text style={styles.sectionLabel}>Date Range</Text>
+                    {DATE_PERIODS.map((period) => (
+                      <TouchableOpacity
+                        key={period}
+                        style={[
+                          styles.optionItem,
+                          selectedPeriod === period && styles.selectedOption
+                        ]}
+                        onPress={() => handlePeriodSelect(period)}
+                      >
+                        <Text style={[
+                          styles.optionText,
+                          selectedPeriod === period && styles.selectedOptionText
+                        ]}>
+                          {period}
+                        </Text>
+                        {selectedPeriod === period && (
+                          <Ionicons name="checkmark" size={20} color="#2563EB" />
+                        )}
+                      </TouchableOpacity>
+                    ))}
 
-                <Text style={[styles.sectionLabel, { marginTop: 24 }]}>Compare to</Text>
-                {COMPARISON_OPTIONS.map((option) => (
-                  <TouchableOpacity
-                    key={option}
-                    style={[
-                      styles.optionItem,
-                      selectedComparison === option && styles.selectedOption
-                    ]}
-                    onPress={() => handleComparisonSelect(option)}
-                  >
-                    <Text style={[
-                      styles.optionText,
-                      selectedComparison === option && styles.selectedOptionText
-                    ]}>
-                      {option}
-                    </Text>
-                    {selectedComparison === option && (
-                      <Ionicons name="checkmark" size={20} color="#2563EB" />
-                    )}
-                  </TouchableOpacity>
-                ))}
+                    <Text style={[styles.sectionLabel, { marginTop: 24 }]}>Compare to</Text>
+                    {COMPARISON_OPTIONS.map((option) => (
+                      <TouchableOpacity
+                        key={option}
+                        style={[
+                          styles.optionItem,
+                          selectedComparison === option && styles.selectedOption
+                        ]}
+                        onPress={() => handleComparisonSelect(option)}
+                      >
+                        <Text style={[
+                          styles.optionText,
+                          selectedComparison === option && styles.selectedOptionText
+                        ]}>
+                          {option}
+                        </Text>
+                        {selectedComparison === option && (
+                          <Ionicons name="checkmark" size={20} color="#2563EB" />
+                        )}
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
               </ScrollView>
 
               <View style={styles.sheetActions}>
                 <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
                   <Text style={styles.clearButtonText}>Clear</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.applyButton} onPress={handleApply}>
+                <TouchableOpacity 
+                  style={[
+                    styles.applyButton,
+                    showCalendar && (!startDate || !endDate) && styles.disabledButton
+                  ]} 
+                  onPress={handleApply}
+                  disabled={showCalendar && (!startDate || !endDate)}
+                >
                   <Text style={styles.applyButtonText}>Apply</Text>
                 </TouchableOpacity>
               </View>
@@ -334,5 +469,45 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: '#fff',
+  },
+  calendarHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#2563EB',
+    fontWeight: '500',
+    marginLeft: 4,
+  },
+  calendarTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    flex: 1,
+  },
+  selectedRangeContainer: {
+    marginTop: 16,
+    padding: 12,
+    backgroundColor: '#EBF4FF',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  selectedRangeText: {
+    fontSize: 14,
+    color: '#2563EB',
+    fontWeight: '500',
+  },
+  disabledButton: {
+    backgroundColor: '#9CA3AF',
   },
 });
