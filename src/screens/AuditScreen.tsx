@@ -241,14 +241,14 @@ export default function AuditScreen() {
     },
     {
       id: 'post-views',
-      title: 'Post views',
+      title: 'Posts views',
       value: '489',
       subtitle: '▼ 20% from april',
       changePositive: false
     },
     {
       id: 'post-clicks',
-      title: 'Post clicks',
+      title: 'Posts clicks',
       value: '42',
       subtitle: '▲ 20% from april',
       changePositive: true
