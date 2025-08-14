@@ -1,22 +1,24 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Svg, { Circle } from 'react-native-svg';
 import CommonHeader from '../components/CommonHeader';
 import DateFilter from '../components/DateFilter';
 import { useDate } from '../contexts/DateContext';
 
-interface KPICardProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  value: string;
-  delta?: string;
-  deltaType?: 'up' | 'down' | 'neutral';
+interface CircularProgressProps {
+  score: number;
 }
 
-interface ActionCardProps {
+interface RecommendationCardProps {
+  id: string;
   title: string;
-  count?: number;
-  onPress: () => void;
+  description: string;
+  priority: 'High' | 'Medium' | 'Low';
+  icon: string;
+  iconColor: string;
+  onReadMore: (id: string) => void;
+  onDismiss: (id: string) => void;
 }
 
 interface ActivityItemProps {
@@ -26,42 +28,79 @@ interface ActivityItemProps {
   onView?: () => void;
 }
 
-const KPICard: React.FC<KPICardProps> = ({ icon, label, value, delta, deltaType }) => (
-  <View style={styles.kpiCard}>
-    <Ionicons name={icon} size={20} color="#2563EB" style={styles.kpiIcon} />
-    <Text style={styles.kpiLabel}>{label}</Text>
-    <Text style={styles.kpiValue}>{value}</Text>
-    {delta && (
-      <View style={styles.deltaContainer}>
-        <Ionicons 
-          name={deltaType === 'up' ? 'arrow-up' : deltaType === 'down' ? 'arrow-down' : 'remove'} 
-          size={12} 
-          color={deltaType === 'up' ? '#10B981' : deltaType === 'down' ? '#EF4444' : '#6B7280'} 
-        />
-        <Text style={[
-          styles.deltaText,
-          { color: deltaType === 'up' ? '#10B981' : deltaType === 'down' ? '#EF4444' : '#6B7280' }
-        ]}>
-          {delta}
-        </Text>
-      </View>
-    )}
-  </View>
-);
+const CircularProgress: React.FC<CircularProgressProps> = ({ score }) => {
+  const size = 80;
+  const strokeWidth = 8;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const progress = (score / 100) * circumference;
 
-const ActionCard: React.FC<ActionCardProps> = ({ title, count, onPress }) => (
-  <TouchableOpacity style={styles.actionCard} onPress={onPress}>
-    <View style={styles.actionCardContent}>
-      <Text style={styles.actionCardTitle}>{title}</Text>
-      {count !== undefined && (
-        <View style={styles.countBadge}>
-          <Text style={styles.countText}>{count}</Text>
-        </View>
-      )}
+  return (
+    <View style={styles.circularProgressContainer}>
+      <Svg width={size} height={size}>
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="#E5E7EB"
+          strokeWidth={strokeWidth}
+          fill="none"
+        />
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="#2563EB"
+          strokeWidth={strokeWidth}
+          fill="none"
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference - progress}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      </Svg>
+      <View style={styles.circularProgressText}>
+        <Text style={styles.scoreNumber}>{score}</Text>
+      </View>
     </View>
-    <Ionicons name="chevron-forward" size={20} color="#6B7280" />
-  </TouchableOpacity>
-);
+  );
+};
+
+const RecommendationCard: React.FC<RecommendationCardProps> = ({
+  id,
+  title,
+  description,
+  priority,
+  icon,
+  iconColor,
+  onReadMore,
+  onDismiss,
+}) => {
+  return (
+    <View style={styles.recommendationCard}>
+      <View style={styles.cardHeader}>
+        <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
+          <Ionicons name={icon as any} size={20} color={iconColor} />
+        </View>
+        <View style={[styles.priorityBadge, { backgroundColor: priority === 'High' ? '#FEE2E2' : priority === 'Medium' ? '#FEF3C7' : '#ECFDF5' }]}>
+          <Text style={[styles.priorityText, { color: priority === 'High' ? '#DC2626' : priority === 'Medium' ? '#D97706' : '#059669' }]}>
+            {priority}
+          </Text>
+        </View>
+      </View>
+      <Text style={styles.cardTitle}>{title}</Text>
+      <Text style={styles.cardDescription} numberOfLines={2}>{description}</Text>
+      <View style={styles.cardFooter}>
+        <TouchableOpacity style={styles.readMoreButton} onPress={() => onReadMore(id)}>
+          <Text style={styles.readMoreButtonText}>Read More</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => onDismiss(id)}>
+          <Text style={styles.dismissText}>Dismiss</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
 const ActivityItem: React.FC<ActivityItemProps> = ({ icon, title, timeAgo, onView }) => (
   <View style={styles.activityItem}>
@@ -87,6 +126,8 @@ export default function HomeScreen() {
     comparisonEnabled, 
     setComparisonEnabled 
   } = useDate();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
 
   const handleAlertsPress = () => {
     console.log('Alerts pressed');
@@ -102,25 +143,125 @@ export default function HomeScreen() {
     console.log('Comparison mode:', enabled);
   };
 
-  const handleUnrepliedReviews = () => {
-    console.log('Navigate to unreplied reviews');
+  const handleReadMore = (id: string) => {
+    const recommendation = mergedRecommendations.find(r => r.id === id);
+    setSelectedRecommendation(recommendation);
+    setModalVisible(true);
   };
 
-  const handleRankDrop = () => {
-    console.log('Navigate to Grid');
+  const handleDismiss = (id: string) => {
+    Alert.alert('Dismissed', `Recommendation ${id} has been dismissed.`);
   };
 
-  const handleTopFixes = () => {
-    console.log('Navigate to Audit Overview');
+  const handleReplyPress = () => {
+    console.log('Navigate to pending replies');
   };
 
-  const handleBusinessProfile = () => {
-    console.log('Navigate to Business Profile Viewer');
+  const handleActivityView = (activityType: string) => {
+    console.log(`View ${activityType} details`);
   };
 
-  const handleActivityView = (activity: string) => {
-    console.log(`View activity: ${activity}`);
-  };
+  const auditScore = 85;
+  
+  const businessActivityData = [
+    {
+      id: 'total-views',
+      title: 'Total views',
+      value: '2,567',
+      subtitle: '▲ 20% from april',
+      changePositive: true
+    },
+    {
+      id: 'website-visits',
+      title: 'Website visits',
+      value: '567',
+      subtitle: '▲ 20% from april',
+      changePositive: true
+    },
+    {
+      id: 'calls',
+      title: 'Calls',
+      value: '80',
+      subtitle: '▲ 20% from april',
+      changePositive: true
+    }
+  ];
+
+  const ratingBreakdown = [
+    { stars: 5, percentage: 98 },
+    { stars: 4, percentage: 1 },
+    { stars: 3, percentage: 0 },
+    { stars: 2, percentage: 0 },
+    { stars: 1, percentage: 1 }
+  ];
+
+  const mergedRecommendations = [
+    {
+      id: '1',
+      title: 'Add business description',
+      description: 'Complete your business profile to improve visibility and customer engagement.',
+      priority: 'High' as const,
+      icon: 'warning',
+      iconColor: '#EF4444'
+    },
+    {
+      id: '2',
+      title: 'Reply to recent reviews',
+      description: 'Respond to 7 pending customer reviews to improve engagement.',
+      priority: 'High' as const,
+      icon: 'chatbubbles',
+      iconColor: '#EF4444'
+    },
+    {
+      id: '3',
+      title: 'Improve grid ranking',
+      description: 'Focus on downtown area to maintain top ranking position.',
+      priority: 'Medium' as const,
+      icon: 'map',
+      iconColor: '#F59E0B'
+    },
+    {
+      id: '4',
+      title: 'Add more photos',
+      description: 'Upload 3 more photos to enhance your business profile.',
+      priority: 'Medium' as const,
+      icon: 'camera',
+      iconColor: '#F59E0B'
+    }
+  ];
+
+  const recentActivityData = [
+    {
+      icon: 'star' as keyof typeof Ionicons.glyphMap,
+      title: 'Received 5★ review',
+      timeAgo: '2 hours ago',
+      onView: () => handleActivityView('review')
+    },
+    {
+      icon: 'checkmark-circle' as keyof typeof Ionicons.glyphMap,
+      title: 'Audit item marked done',
+      timeAgo: '4 hours ago',
+      onView: () => handleActivityView('audit')
+    },
+    {
+      icon: 'document-text' as keyof typeof Ionicons.glyphMap,
+      title: 'Profile description updated',
+      timeAgo: '1 day ago',
+      onView: () => handleActivityView('profile')
+    },
+    {
+      icon: 'call' as keyof typeof Ionicons.glyphMap,
+      title: 'Phone number verified',
+      timeAgo: '2 days ago',
+      onView: () => handleActivityView('verification')
+    },
+    {
+      icon: 'location' as keyof typeof Ionicons.glyphMap,
+      title: 'Grid ranking updated',
+      timeAgo: '3 days ago',
+      onView: () => handleActivityView('grid')
+    }
+  ];
 
   return (
     <View style={styles.container}>
@@ -135,89 +276,158 @@ export default function HomeScreen() {
         onComparisonToggle={handleComparisonToggle}
       />
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
-        {/* KPI Strip */}
+        
+        {/* Widget #1 - GMB Profile */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{selectedPeriod}</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.kpiStrip}>
-            <KPICard icon="chatbubble" label="New Reviews" value="24" delta={comparisonEnabled ? "+12%" : "+12%"} deltaType="up" />
-            <KPICard icon="star" label="Avg Rating" value="4.2" delta={comparisonEnabled ? "-0.1" : "-0.1"} deltaType="down" />
-            <KPICard icon="call" label="Calls" value="156" delta={comparisonEnabled ? "+8%" : "+8%"} deltaType="up" />
-            <KPICard icon="navigate" label="Directions" value="89" delta={comparisonEnabled ? "+15%" : "+15%"} deltaType="up" />
-            <KPICard icon="trending-up" label="Grid Rank Δ" value="+3" delta={comparisonEnabled ? "↑2" : "↑2"} deltaType="up" />
-            <KPICard icon="checkmark-circle" label="Audit Score" value="85%" delta={comparisonEnabled ? "+5%" : "+5%"} deltaType="up" />
+          <Text style={styles.sectionTitle}>GMB Profile</Text>
+          <View style={styles.gmbProfileWidget}>
+            <View style={styles.auditScoreSection}>
+              <Text style={styles.widgetSubtitle}>Audit Score</Text>
+              <CircularProgress score={auditScore} />
+              <Text style={styles.auditScoreText}>Good</Text>
+            </View>
+            <View style={styles.businessActivitySection}>
+              <Text style={styles.widgetSubtitle}>Business Activity</Text>
+              {businessActivityData.map((item) => (
+                <View key={item.id} style={styles.activityItem}>
+                  <Text style={styles.activityTitle}>{item.title}</Text>
+                  <Text style={styles.activityValue}>{item.value}</Text>
+                  <Text style={[styles.activitySubtitle, { color: item.changePositive ? '#10B981' : '#EF4444' }]}>
+                    {item.subtitle}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        {/* Widget #2 - Review */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Reviews</Text>
+          <View style={styles.reviewWidget}>
+            <View style={styles.reviewSummary}>
+              <Text style={styles.ratingValue}>4.90</Text>
+              <View style={styles.starsContainer}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Ionicons key={star} name="star" size={16} color="#FCD34D" />
+                ))}
+              </View>
+              <Text style={styles.totalReviews}>145 Reviews</Text>
+            </View>
+            <View style={styles.reviewBreakdown}>
+              {ratingBreakdown.map((rating) => (
+                <View key={rating.stars} style={styles.ratingRow}>
+                  <Text style={styles.starNumber}>{rating.stars}★</Text>
+                  <View style={styles.progressBar}>
+                    <View style={[styles.progressFill, { width: `${rating.percentage}%` }]} />
+                  </View>
+                  <Text style={styles.percentageText}>{rating.percentage}%</Text>
+                </View>
+              ))}
+            </View>
+            <TouchableOpacity style={styles.replyButton} onPress={handleReplyPress}>
+              <Ionicons name="chatbubble-outline" size={16} color="#2563EB" />
+              <Text style={styles.replyButtonText}>7 Pending Replies</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Widget #3 - Grid Ranking Summary */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Grid Ranking</Text>
+          <View style={styles.gridWidget}>
+            <Text style={styles.lastRunDate}>Last run: Jun 19, 2025</Text>
+            <View style={styles.gridStats}>
+              <View style={styles.mainGridStat}>
+                <Text style={styles.gridRankValue}>9.29</Text>
+                <Text style={styles.gridRankLabel}>Avg. Map Rank</Text>
+              </View>
+              <View style={styles.gridChange}>
+                <View style={styles.changeContainer}>
+                  <Text style={styles.changeValue}>0.1</Text>
+                  <Ionicons name="arrow-down" size={16} color="#EF4444" />
+                </View>
+                <Text style={styles.changeLabel}>Change</Text>
+              </View>
+            </View>
+            <View style={styles.cellStats}>
+              <Text style={styles.cellStat}>Best: Rank 1 - Downtown</Text>
+              <Text style={styles.cellStat}>Worst: Rank 15 - Suburbs</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Widget #4 - Recommendations */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Recommendations</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recommendationContainer}>
+            {mergedRecommendations.map((recommendation) => (
+              <RecommendationCard
+                key={recommendation.id}
+                {...recommendation}
+                onReadMore={handleReadMore}
+                onDismiss={handleDismiss}
+              />
+            ))}
           </ScrollView>
         </View>
 
-        {/* Action Cards */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <ActionCard title="Unreplied reviews" count={7} onPress={handleUnrepliedReviews} />
-          <ActionCard title="Rank drop detected" onPress={handleRankDrop} />
-          <ActionCard title="Top fixes ready" count={3} onPress={handleTopFixes} />
-          <ActionCard title="Business Profile completeness" onPress={handleBusinessProfile} />
-        </View>
-
-        {/* Recent Activity */}
+        {/* Widget #5 - Recent Activity */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Recent Activity</Text>
-          <ActivityItem 
-            icon="chatbubble-outline" 
-            title="Replied to a 3★ review" 
-            timeAgo="2 hours ago"
-            onView={() => handleActivityView('review-reply')}
-          />
-          <ActivityItem 
-            icon="checkmark-circle-outline" 
-            title="Audit item marked done" 
-            timeAgo="4 hours ago"
-            onView={() => handleActivityView('audit-complete')}
-          />
-          <ActivityItem 
-            icon="document-text-outline" 
-            title="Profile description updated" 
-            timeAgo="1 day ago"
-            onView={() => handleActivityView('profile-update')}
-          />
-          <ActivityItem 
-            icon="star-outline" 
-            title="Received 5★ review" 
-            timeAgo="1 day ago"
-            onView={() => handleActivityView('new-review')}
-          />
-          <ActivityItem 
-            icon="call-outline" 
-            title="Phone number verified" 
-            timeAgo="2 days ago"
-          />
-          <ActivityItem 
-            icon="image-outline" 
-            title="New photos uploaded" 
-            timeAgo="3 days ago"
-            onView={() => handleActivityView('photos-upload')}
-          />
-          <ActivityItem 
-            icon="time-outline" 
-            title="Business hours updated" 
-            timeAgo="4 days ago"
-          />
-          <ActivityItem 
-            icon="location-outline" 
-            title="Address information verified" 
-            timeAgo="5 days ago"
-          />
-          <ActivityItem 
-            icon="chatbubble-outline" 
-            title="Replied to customer inquiry" 
-            timeAgo="6 days ago"
-            onView={() => handleActivityView('inquiry-reply')}
-          />
-          <ActivityItem 
-            icon="trending-up-outline" 
-            title="Ranking improved in search" 
-            timeAgo="1 week ago"
-          />
+          <View style={styles.modernActivityContainer}>
+            {recentActivityData.map((activity, index) => (
+              <View key={index} style={styles.modernActivityItem}>
+                <View style={styles.activityIconContainer}>
+                  <Ionicons name={activity.icon} size={20} color="#2563EB" />
+                </View>
+                <View style={styles.activityContent}>
+                  <Text style={styles.modernActivityTitle}>{activity.title}</Text>
+                  <Text style={styles.modernActivityTime}>{activity.timeAgo}</Text>
+                </View>
+                {activity.onView && (
+                  <TouchableOpacity style={styles.modernViewButton} onPress={activity.onView}>
+                    <Text style={styles.modernViewButtonText}>View</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))}
+          </View>
         </View>
       </ScrollView>
+
+      {/* Read More Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {selectedRecommendation?.title}
+              </Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Ionicons name="close" size={24} color="#6B7280" />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.modalDescription}>
+              {selectedRecommendation?.description}
+            </Text>
+            <Text style={styles.modalDetailText}>
+              This recommendation will help improve your business visibility and customer engagement. Follow the suggested actions to see positive results in your analytics.
+            </Text>
+            <TouchableOpacity 
+              style={styles.modalCloseButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.modalCloseButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -241,139 +451,421 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#1F2937',
-    marginBottom: 12,
+    marginBottom: 16,
   },
-  kpiStrip: {
-    flexDirection: 'row',
+  
+  circularProgressContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    marginBottom: 8,
   },
-  kpiCard: {
+  circularProgressText: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scoreNumber: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+
+  recommendationCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginRight: 12,
-    minWidth: 120,
-    alignItems: 'center',
+    width: 280,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  kpiIcon: {
-    marginBottom: 8,
-  },
-  kpiLabel: {
-    fontSize: 12,
-    color: '#6B7280',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  kpiValue: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: 4,
-  },
-  deltaContainer: {
+  cardHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
-  },
-  deltaText: {
-    fontSize: 12,
-    fontWeight: '500',
-    marginLeft: 2,
-  },
-  actionCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  actionCardContent: {
-    flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
+    marginBottom: 12,
   },
-  actionCardTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1F2937',
-    flex: 1,
-  },
-  countBadge: {
-    backgroundColor: '#FCD34D',
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginLeft: 8,
-  },
-  countText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#1F2937',
-  },
-  activityItem: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  activityIconContainer: {
+  iconContainer: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#EBF4FF',
-    alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    alignItems: 'center',
   },
-  activityContent: {
+  priorityBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  priorityText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  cardDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  readMoreButton: {
+    backgroundColor: '#2563EB',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  readMoreButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  dismissText: {
+    color: '#6B7280',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+
+  gmbProfileWidget: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  auditScoreSection: {
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  widgetSubtitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 12,
+  },
+  auditScoreText: {
+    fontSize: 14,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  businessActivitySection: {
     flex: 1,
+  },
+  activityItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F9FAFB',
   },
   activityTitle: {
     fontSize: 14,
-    fontWeight: '500',
+    color: '#374151',
+    flex: 1,
+  },
+  activityValue: {
+    fontSize: 16,
+    fontWeight: '600',
     color: '#1F2937',
-    marginBottom: 2,
+    marginRight: 8,
+  },
+  activitySubtitle: {
+    fontSize: 12,
+    fontWeight: '500',
   },
   activityTime: {
     fontSize: 12,
     color: '#6B7280',
   },
   viewButton: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 6,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#2563EB',
   },
   viewButtonText: {
     fontSize: 12,
+    color: '#374151',
     fontWeight: '500',
+  },
+
+  reviewWidget: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  reviewSummary: {
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  ratingValue: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  totalReviews: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  reviewBreakdown: {
+    marginBottom: 20,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  starNumber: {
+    fontSize: 14,
+    color: '#374151',
+    width: 30,
+  },
+  progressBar: {
+    flex: 1,
+    height: 8,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 4,
+    marginHorizontal: 12,
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#FCD34D',
+    borderRadius: 4,
+  },
+  percentageText: {
+    fontSize: 14,
+    color: '#374151',
+    width: 40,
+    textAlign: 'right',
+  },
+  replyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  replyButtonText: {
     color: '#2563EB',
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 8,
+  },
+
+  gridWidget: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  lastRunDate: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 16,
+  },
+  gridStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  mainGridStat: {
+    backgroundColor: '#10B981',
+    borderRadius: 12,
+    padding: 16,
+    marginRight: 12,
+    minWidth: 120,
+  },
+  gridRankValue: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  gridRankLabel: {
+    fontSize: 14,
+    color: '#fff',
+    opacity: 0.9,
+  },
+  gridChange: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    minWidth: 100,
+  },
+  changeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  changeValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginRight: 4,
+  },
+  changeLabel: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  cellStats: {
+    gap: 8,
+  },
+  cellStat: {
+    fontSize: 14,
+    color: '#374151',
+  },
+
+  recommendationContainer: {
+    flexDirection: 'row',
+  },
+
+  modernActivityContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  modernActivityItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F9FAFB',
+  },
+  activityIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#EBF4FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  activityContent: {
+    flex: 1,
+  },
+  modernActivityTitle: {
+    fontSize: 14,
+    color: '#1F2937',
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  modernActivityTime: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  modernViewButton: {
+    backgroundColor: '#2563EB',
+    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  modernViewButtonText: {
+    fontSize: 12,
+    color: '#fff',
+    fontWeight: '500',
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 24,
+    margin: 20,
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1F2937',
+    flex: 1,
+  },
+  modalDescription: {
+    fontSize: 16,
+    color: '#374151',
+    marginBottom: 16,
+    lineHeight: 24,
+  },
+  modalDetailText: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  modalCloseButton: {
+    backgroundColor: '#2563EB',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+  },
+  modalCloseButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
