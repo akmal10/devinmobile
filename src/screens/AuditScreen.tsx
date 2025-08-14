@@ -551,14 +551,14 @@ const styles = StyleSheet.create({
   },
   cardsContentContainer: {
     paddingLeft: 16,
-    paddingRight: 160,
+    paddingRight: 250,
   },
   recommendationCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
-    marginRight: 50,
-    width: 460,
+    marginRight: 80,
+    width: 600,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
