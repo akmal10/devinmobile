@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 interface DateContextType {
   selectedPeriod: string;
@@ -20,17 +20,20 @@ export function DateProvider({ children }: DateProviderProps) {
   const [comparisonEnabled, setComparisonEnabled] = useState(false);
   const [selectedComparison, setSelectedComparison] = useState('None');
 
+  const contextValue = useMemo(
+    () => ({
+      selectedPeriod,
+      setSelectedPeriod,
+      comparisonEnabled,
+      setComparisonEnabled,
+      selectedComparison,
+      setSelectedComparison,
+    }),
+    [selectedPeriod, comparisonEnabled, selectedComparison]
+  );
+
   return (
-    <DateContext.Provider
-      value={{
-        selectedPeriod,
-        setSelectedPeriod,
-        comparisonEnabled,
-        setComparisonEnabled,
-        selectedComparison,
-        setSelectedComparison,
-      }}
-    >
+    <DateContext.Provider value={contextValue}>
       {children}
     </DateContext.Provider>
   );

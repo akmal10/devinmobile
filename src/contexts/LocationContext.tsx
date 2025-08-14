@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 interface LocationContextType {
   selectedLocation: string;
@@ -22,8 +22,13 @@ interface LocationProviderProps {
 export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) => {
   const [selectedLocation, setSelectedLocation] = useState('New York');
 
+  const contextValue = useMemo(
+    () => ({ selectedLocation, setSelectedLocation }),
+    [selectedLocation]
+  );
+
   return (
-    <LocationContext.Provider value={{ selectedLocation, setSelectedLocation }}>
+    <LocationContext.Provider value={contextValue}>
       {children}
     </LocationContext.Provider>
   );
