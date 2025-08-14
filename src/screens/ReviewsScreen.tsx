@@ -1,11 +1,149 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import CommonHeader from '../components/CommonHeader';
 
+interface RecommendationCardProps {
+  id: string;
+  title: string;
+  description: string;
+  priority: 'High' | 'Medium' | 'Low';
+  icon: string;
+  iconColor: string;
+  onReadMore: (id: string) => void;
+  onDismiss: (id: string) => void;
+}
+
+const RecommendationCard: React.FC<RecommendationCardProps> = ({
+  id,
+  title,
+  description,
+  priority,
+  icon,
+  iconColor,
+  onReadMore,
+  onDismiss,
+}) => {
+  return (
+    <View style={styles.recommendationCard}>
+      <View style={styles.cardHeader}>
+        <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
+          <Ionicons name={icon as any} size={24} color={iconColor} />
+        </View>
+      </View>
+      <Text style={styles.cardTitle}>{title}</Text>
+      <Text style={styles.cardDescription}>{description}</Text>
+      <View style={styles.cardFooter}>
+        <TouchableOpacity style={styles.readMoreButton} onPress={() => onReadMore(id)}>
+          <Text style={styles.readMoreButtonText}>Read More</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => onDismiss(id)}>
+          <Text style={styles.dismissText}>dismiss</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
 export default function ReviewsScreen() {
+  const [recommendations] = useState([
+    {
+      id: '1',
+      title: 'Respond to negative reviews',
+      description: 'Lorem ipsum dolor sit amet consectetur. Ultricies scelerisque netus est urna porttitor.',
+      priority: 'High' as const,
+      icon: 'warning',
+      iconColor: '#EF4444'
+    },
+    {
+      id: '2',
+      title: 'Encourage more reviews',
+      description: 'Lorem ipsum dolor sit amet consectetur. Ultricies scelerisque netus est urna porttitor.',
+      priority: 'Medium' as const,
+      icon: 'bulb',
+      iconColor: '#F59E0B'
+    },
+    {
+      id: '3',
+      title: 'Improve response time',
+      description: 'Lorem ipsum dolor sit amet consectetur. Ultricies scelerisque netus est urna porttitor.',
+      priority: 'Low' as const,
+      icon: 'bulb-outline',
+      iconColor: '#10B981'
+    }
+  ]);
+
+  const [selectedFilter, setSelectedFilter] = useState('All');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
+
   const handleAlertsPress = () => {
     console.log('Alerts pressed');
   };
+
+  const handleReadMore = (id: string) => {
+    const recommendation = recommendations.find(r => r.id === id);
+    setSelectedRecommendation(recommendation);
+    setModalVisible(true);
+  };
+
+  const handleDismiss = (id: string) => {
+    Alert.alert('Dismissed', `Recommendation ${id} has been dismissed.`);
+  };
+
+  const filteredRecommendations = selectedFilter === 'All' 
+    ? recommendations 
+    : recommendations.filter(r => r.priority === selectedFilter.replace(' Priority', ''));
+
+  const filters = ['All', 'High Priority', 'Medium Priority', 'Low Priority'];
+
+  const overviewData = [
+    {
+      id: 'average-rating',
+      title: 'Average Rating',
+      value: '4.3',
+      subtitle: '/ 5',
+      icon: 'star',
+      iconColor: '#FCD34D',
+      trend: 'up'
+    },
+    {
+      id: 'total-reviews',
+      title: 'Total Reviews',
+      value: '1,254',
+      subtitle: '+3.4%',
+      icon: 'chatbubbles',
+      iconColor: '#2563EB',
+      trend: 'up'
+    },
+    {
+      id: 'positive',
+      title: 'Positive',
+      value: '72%',
+      subtitle: '',
+      icon: 'thumbs-up',
+      iconColor: '#10B981',
+      trend: null
+    },
+    {
+      id: 'negative',
+      title: 'Negative',
+      value: '18%',
+      subtitle: '',
+      icon: 'thumbs-down',
+      iconColor: '#EF4444',
+      trend: null
+    },
+    {
+      id: 'response-rate',
+      title: 'Response Rate',
+      value: '86%',
+      subtitle: '2h 15m',
+      icon: 'time',
+      iconColor: '#2563EB',
+      trend: null
+    }
+  ];
 
   return (
     <View style={styles.container}>
@@ -14,9 +152,110 @@ export default function ReviewsScreen() {
         alertsCount={3}
       />
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.title}>Reviews</Text>
-        <Text style={styles.subtitle}>Reviews management screen</Text>
+        {/* Overview Cards */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Overview</Text>
+          
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.overviewContainer}>
+            {overviewData.map((item) => (
+              <View key={item.id} style={styles.overviewCard}>
+                <View style={styles.overviewCardHeader}>
+                  <Text style={styles.overviewCardTitle}>{item.title}</Text>
+                </View>
+                <View style={styles.overviewCardContent}>
+                  <View style={styles.overviewValueContainer}>
+                    <Text style={styles.overviewCardValue}>{item.value}</Text>
+                    {item.subtitle && (
+                      <Text style={styles.overviewCardSubtitle}>{item.subtitle}</Text>
+                    )}
+                    {item.trend === 'up' && (
+                      <Ionicons name="trending-up" size={16} color="#10B981" style={styles.trendIcon} />
+                    )}
+                  </View>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Recommendations */}
+        <View style={styles.section}>
+          <View style={styles.recommendationHeader}>
+            <Text style={styles.sectionTitle}>Recommendation</Text>
+            <View style={styles.recommendationBadge}>
+              <Text style={styles.recommendationBadgeText}>211 📊 35</Text>
+            </View>
+          </View>
+          
+          {/* Filter Tabs */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
+            {filters.map((filter) => (
+              <TouchableOpacity
+                key={filter}
+                style={[
+                  styles.filterTab,
+                  selectedFilter === filter && styles.filterTabActive
+                ]}
+                onPress={() => setSelectedFilter(filter)}
+              >
+                <Text style={[
+                  styles.filterTabText,
+                  selectedFilter === filter && styles.filterTabTextActive
+                ]}>
+                  {filter}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          {/* Recommendation Cards */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recommendationContainer}>
+            {filteredRecommendations.map((recommendation) => (
+              <RecommendationCard
+                key={recommendation.id}
+                {...recommendation}
+                onReadMore={handleReadMore}
+                onDismiss={handleDismiss}
+              />
+            ))}
+          </ScrollView>
+        </View>
       </ScrollView>
+
+      {/* Read More Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {selectedRecommendation?.title}
+              </Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.modalBody}>
+              <Text style={styles.modalDescription}>
+                {selectedRecommendation?.description}
+              </Text>
+              <Text style={styles.modalDetailText}>
+                This is a detailed explanation of the recommendation. Here you would find comprehensive information about why this recommendation is important, how to implement it, and what benefits it will bring to your business.
+              </Text>
+              <Text style={styles.modalDetailText}>
+                Priority: {selectedRecommendation?.priority}
+              </Text>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -24,7 +263,7 @@ export default function ReviewsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f9fa',
   },
   content: {
     flex: 1,
@@ -32,14 +271,228 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 16,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 16,
+  },
+  overviewContainer: {
     marginBottom: 8,
   },
-  subtitle: {
+  overviewCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginRight: 12,
+    width: 140,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  overviewCardHeader: {
+    marginBottom: 12,
+  },
+  overviewCardTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+    lineHeight: 18,
+  },
+  overviewCardContent: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  overviewValueContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    flexWrap: 'wrap',
+  },
+  overviewCardValue: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#2563EB',
+    marginRight: 4,
+  },
+  overviewCardSubtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#6B7280',
+    marginRight: 4,
+  },
+  trendIcon: {
+    marginLeft: 4,
+  },
+  recommendationHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  recommendationBadge: {
+    backgroundColor: '#2563EB',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  recommendationBadgeText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  filterContainer: {
+    marginBottom: 16,
+  },
+  filterTab: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#f3f4f6',
+    marginRight: 8,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  filterTabActive: {
+    backgroundColor: '#2563EB',
+  },
+  filterTabText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  filterTabTextActive: {
+    color: '#fff',
+  },
+  recommendationContainer: {
+    marginBottom: 8,
+  },
+  recommendationCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginRight: 12,
+    width: 280,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  cardHeader: {
+    marginBottom: 12,
+  },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  cardDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  readMoreButton: {
+    backgroundColor: '#2563EB',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  readMoreButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  dismissText: {
+    color: '#6B7280',
+    fontSize: 14,
+    textDecorationLine: 'underline',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    margin: 20,
+    maxHeight: '80%',
+    width: '90%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1F2937',
+    flex: 1,
+    marginRight: 16,
+  },
+  closeButton: {
+    padding: 4,
+    minHeight: 44,
+    minWidth: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalBody: {
+    padding: 20,
+  },
+  modalDescription: {
+    fontSize: 16,
+    color: '#374151',
+    lineHeight: 24,
+    marginBottom: 16,
+  },
+  modalDetailText: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+    marginBottom: 12,
   },
 });
