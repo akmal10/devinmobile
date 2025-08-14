@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Modal, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Modal, FlatList, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Circle } from 'react-native-svg';
 import CommonHeader from '../components/CommonHeader';
@@ -288,7 +288,7 @@ export default function AuditScreen() {
         </View>
 
         {/* Recommendations */}
-        <View style={styles.section}>
+        <View style={[styles.section, { maxWidth: '100%', overflow: 'hidden' }]}>
           <Text style={styles.sectionTitle}>Recommendation</Text>
           
           <DateFilter
@@ -552,14 +552,14 @@ const styles = StyleSheet.create({
   },
   cardsContentContainer: {
     paddingLeft: 16,
-    paddingRight: 60,
+    paddingRight: 100,
   },
   recommendationCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginRight: 20,
-    width: '95%',
+    width: Dimensions.get('window').width * 0.85,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
