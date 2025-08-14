@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CommonHeader from '../components/CommonHeader';
 import DateFilter from '../components/DateFilter';
 import { useDate } from '../contexts/DateContext';
+import AllReviewsScreen from './AllReviewsScreen';
 
 interface RecommendationCardProps {
   id: string;
@@ -173,14 +174,7 @@ export default function ReviewsScreen() {
   ];
 
   if (showAllReviews) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.sectionTitle}>All Reviews Screen - Coming Soon</Text>
-        <TouchableOpacity onPress={handleBackToReviews}>
-          <Text style={styles.sectionTitle}>← Back to Reviews</Text>
-        </TouchableOpacity>
-      </View>
-    );
+    return <AllReviewsScreen onBack={handleBackToReviews} />;
   }
 
   return (
