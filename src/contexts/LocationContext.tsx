@@ -20,7 +20,7 @@ interface LocationProviderProps {
 }
 
 export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) => {
-  const [selectedLocation, setSelectedLocation] = useState('Select Location');
+  const [selectedLocation, setSelectedLocation] = useState('New York');
 
   return (
     <LocationContext.Provider value={{ selectedLocation, setSelectedLocation }}>
