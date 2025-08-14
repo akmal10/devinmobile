@@ -3,10 +3,6 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import CommonHeader from '../components/CommonHeader';
 
 export default function ReviewsScreen() {
-  const handleBrandLocationPress = () => {
-    console.log('Brand/Location selector pressed');
-  };
-
   const handleAlertsPress = () => {
     console.log('Alerts pressed');
   };
@@ -14,10 +10,7 @@ export default function ReviewsScreen() {
   return (
     <View style={styles.container}>
       <CommonHeader
-        onBrandLocationPress={handleBrandLocationPress}
         onAlertsPress={handleAlertsPress}
-        selectedBrand="Sample Brand"
-        selectedLocation="Sample Location"
         alertsCount={3}
       />
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>

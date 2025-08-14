@@ -1,31 +1,47 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface CommonHeaderProps {
-  onBrandLocationPress: () => void;
   onAlertsPress: () => void;
-  selectedBrand?: string;
-  selectedLocation?: string;
   alertsCount?: number;
 }
 
+const LOCATIONS = [
+  'New York',
+  'Los Angeles', 
+  'Chicago',
+  'Houston',
+  'Phoenix',
+  'Philadelphia',
+  'San Antonio',
+  'San Diego',
+  'Dallas',
+  'San Jose'
+];
+
 export default function CommonHeader({
-  onBrandLocationPress,
   onAlertsPress,
-  selectedBrand = 'Select Brand',
-  selectedLocation = 'Select Location',
   alertsCount = 3,
 }: CommonHeaderProps) {
   const insets = useSafeAreaInsets();
+  const [selectedLocation, setSelectedLocation] = useState('Select Location');
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
+  const handleLocationSelect = (location: string) => {
+    setSelectedLocation(location);
+    setIsDropdownVisible(false);
+  };
+
+  const handleLocationPress = () => {
+    setIsDropdownVisible(true);
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
-      <TouchableOpacity style={styles.brandLocationPill} onPress={onBrandLocationPress}>
-        <Text style={styles.brandText} numberOfLines={1}>
-          {selectedBrand}
-        </Text>
+      <TouchableOpacity style={styles.locationPill} onPress={handleLocationPress}>
+        <Text style={styles.locationLabel}>Location</Text>
         <Text style={styles.locationText} numberOfLines={1}>
           {selectedLocation}
         </Text>
@@ -42,6 +58,46 @@ export default function CommonHeader({
           </View>
         )}
       </TouchableOpacity>
+
+      <Modal
+        visible={isDropdownVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsDropdownVisible(false)}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={() => setIsDropdownVisible(false)}
+        >
+          <View style={styles.dropdown}>
+            <Text style={styles.dropdownTitle}>Select Location</Text>
+            <FlatList
+              data={LOCATIONS}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[
+                    styles.dropdownItem,
+                    selectedLocation === item && styles.selectedItem
+                  ]}
+                  onPress={() => handleLocationSelect(item)}
+                >
+                  <Text style={[
+                    styles.dropdownItemText,
+                    selectedLocation === item && styles.selectedItemText
+                  ]}>
+                    {item}
+                  </Text>
+                  {selectedLocation === item && (
+                    <Ionicons name="checkmark" size={20} color="#007AFF" />
+                  )}
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 }
@@ -57,7 +113,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
-  brandLocationPill: {
+  locationPill: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#f8f9fa',
@@ -67,14 +123,14 @@ const styles = StyleSheet.create({
     maxWidth: '70%',
     minHeight: 44,
   },
-  brandText: {
+  locationLabel: {
     fontSize: 14,
     fontWeight: '600',
     color: '#333',
-    marginRight: 4,
+    marginRight: 8,
   },
   locationText: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#666',
     marginRight: 8,
     flex: 1,
@@ -103,5 +159,55 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 12,
     fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dropdown: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    margin: 20,
+    maxHeight: 400,
+    minWidth: 250,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  dropdownTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  dropdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    minHeight: 44,
+  },
+  selectedItem: {
+    backgroundColor: '#f0f8ff',
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    color: '#333',
+    flex: 1,
+  },
+  selectedItemText: {
+    color: '#007AFF',
+    fontWeight: '500',
   },
 });
