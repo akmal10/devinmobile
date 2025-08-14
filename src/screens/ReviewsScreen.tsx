@@ -304,13 +304,30 @@ export default function ReviewsScreen() {
           <Text style={styles.sectionTitle}>Sentiment Breakdown</Text>
           
           <View style={styles.sentimentCard}>
-            {/* Donut Chart */}
+            {/* Bar Chart */}
             <View style={styles.chartContainer}>
-              <View style={styles.donutChart}>
-                <View style={[styles.donutSegment, styles.positiveSegment]} />
-                <View style={[styles.donutSegment, styles.negativeSegment]} />
-                <View style={[styles.donutSegment, styles.neutralSegment]} />
-                <View style={styles.donutCenter} />
+              <View style={styles.barChart}>
+                <View style={styles.barRow}>
+                  <Text style={styles.barLabel}>Positive</Text>
+                  <View style={styles.barContainer}>
+                    <View style={[styles.barFill, styles.positiveBar, { width: '60%' }]} />
+                  </View>
+                  <Text style={styles.barValue}>60%</Text>
+                </View>
+                <View style={styles.barRow}>
+                  <Text style={styles.barLabel}>Negative</Text>
+                  <View style={styles.barContainer}>
+                    <View style={[styles.barFill, styles.negativeBar, { width: '25%' }]} />
+                  </View>
+                  <Text style={styles.barValue}>25%</Text>
+                </View>
+                <View style={styles.barRow}>
+                  <Text style={styles.barLabel}>Neutral</Text>
+                  <View style={styles.barContainer}>
+                    <View style={[styles.barFill, styles.neutralBar, { width: '15%' }]} />
+                  </View>
+                  <Text style={styles.barValue}>15%</Text>
+                </View>
               </View>
             </View>
 
@@ -318,18 +335,18 @@ export default function ReviewsScreen() {
             <View style={styles.sentimentDataContainer}>
               <View style={styles.sentimentDataRow}>
                 <View style={styles.sentimentIndicator}>
-                  <View style={[styles.sentimentDot, { backgroundColor: '#1E3A8A' }]} />
+                  <View style={[styles.sentimentDot, { backgroundColor: '#10B981' }]} />
                   <Text style={styles.sentimentLabel}>Positive</Text>
                 </View>
-                <Text style={styles.sentimentValue}>300</Text>
+                <Text style={styles.sentimentValue}>1,476</Text>
               </View>
               
               <View style={styles.sentimentDataRow}>
                 <View style={styles.sentimentIndicator}>
-                  <View style={[styles.sentimentDot, { backgroundColor: '#10B981' }]} />
+                  <View style={[styles.sentimentDot, { backgroundColor: '#EF4444' }]} />
                   <Text style={styles.sentimentLabel}>Negative</Text>
                 </View>
-                <Text style={styles.sentimentValue}>120</Text>
+                <Text style={styles.sentimentValue}>615</Text>
               </View>
               
               <View style={styles.sentimentDataRow}>
@@ -337,7 +354,7 @@ export default function ReviewsScreen() {
                   <View style={[styles.sentimentDot, { backgroundColor: '#3B82F6' }]} />
                   <Text style={styles.sentimentLabel}>Neutral</Text>
                 </View>
-                <Text style={styles.sentimentValue}>2,349</Text>
+                <Text style={styles.sentimentValue}>369</Text>
               </View>
             </View>
           </View>
@@ -757,51 +774,48 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   chartContainer: {
-    alignItems: 'center',
     marginBottom: 24,
   },
-  donutChart: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    position: 'relative',
-    backgroundColor: '#1E3A8A',
+  barChart: {
+    gap: 16,
+  },
+  barRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  barLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+    width: 60,
+  },
+  barContainer: {
+    flex: 1,
+    height: 24,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 12,
     overflow: 'hidden',
   },
-  donutSegment: {
-    position: 'absolute',
-    width: '100%',
+  barFill: {
     height: '100%',
-    borderRadius: 60,
+    borderRadius: 12,
   },
-  positiveSegment: {
-    backgroundColor: '#1E3A8A',
-    transform: [{ rotate: '0deg' }],
-  },
-  negativeSegment: {
+  positiveBar: {
     backgroundColor: '#10B981',
-    transform: [{ rotate: '40deg' }],
-    width: '30%',
-    height: '30%',
-    top: '10%',
-    left: '35%',
   },
-  neutralSegment: {
+  negativeBar: {
+    backgroundColor: '#EF4444',
+  },
+  neutralBar: {
     backgroundColor: '#3B82F6',
-    transform: [{ rotate: '120deg' }],
-    width: '60%',
-    height: '60%',
-    top: '20%',
-    left: '20%',
   },
-  donutCenter: {
-    position: 'absolute',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#fff',
-    top: 30,
-    left: 30,
+  barValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+    width: 40,
+    textAlign: 'right',
   },
   sentimentDataContainer: {
     gap: 16,
