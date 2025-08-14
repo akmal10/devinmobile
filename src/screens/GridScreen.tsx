@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CommonHeader from '../components/CommonHeader';
+import DateFilter from '../components/DateFilter';
+import { useDate } from '../contexts/DateContext';
 
 const KEYWORDS = [
   'Restaurant near me',
@@ -20,6 +22,7 @@ const GRID_HISTORY = [
 ];
 
 export default function GridScreen() {
+  const { selectedPeriod, setSelectedPeriod, comparisonEnabled, setComparisonEnabled } = useDate();
   const [selectedKeyword, setSelectedKeyword] = useState(KEYWORDS[0]);
   const [isKeywordDropdownVisible, setIsKeywordDropdownVisible] = useState(false);
   const [selectedTimeFilter, setSelectedTimeFilter] = useState('All Time');
@@ -35,6 +38,16 @@ export default function GridScreen() {
 
   const handleViewFullGrid = () => {
     Linking.openURL('https://example.com/grid-view');
+  };
+
+  const handlePeriodChange = (period: string) => {
+    setSelectedPeriod(period);
+    console.log('Date period changed to:', period);
+  };
+
+  const handleComparisonToggle = (enabled: boolean) => {
+    setComparisonEnabled(enabled);
+    console.log('Comparison mode:', enabled);
   };
 
   const renderTimeFilter = (filter: string) => (
@@ -67,6 +80,12 @@ export default function GridScreen() {
       <CommonHeader
         onAlertsPress={handleAlertsPress}
         alertsCount={3}
+      />
+      <DateFilter 
+        selectedPeriod={selectedPeriod}
+        onPeriodChange={handlePeriodChange}
+        comparisonEnabled={comparisonEnabled}
+        onComparisonToggle={handleComparisonToggle}
       />
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         

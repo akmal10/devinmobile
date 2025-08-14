@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Modal, Fla
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Circle } from 'react-native-svg';
 import CommonHeader from '../components/CommonHeader';
+import DateFilter from '../components/DateFilter';
+import { useDate } from '../contexts/DateContext';
 
 interface RecommendationItemProps {
   id: string;
@@ -88,6 +90,7 @@ const RecommendationCard: React.FC<RecommendationItemProps> = ({
 };
 
 export default function AuditScreen() {
+  const { selectedPeriod, setSelectedPeriod, comparisonEnabled, setComparisonEnabled } = useDate();
   const [recommendations] = useState([
     {
       id: '1',
@@ -140,6 +143,16 @@ export default function AuditScreen() {
 
   const handleViewEditGoogle = () => {
     console.log('Navigate to Business Profile Viewer');
+  };
+
+  const handlePeriodChange = (period: string) => {
+    setSelectedPeriod(period);
+    console.log('Date period changed to:', period);
+  };
+
+  const handleComparisonToggle = (enabled: boolean) => {
+    setComparisonEnabled(enabled);
+    console.log('Comparison mode:', enabled);
   };
 
   const auditScore = 85;
@@ -254,6 +267,12 @@ export default function AuditScreen() {
       <CommonHeader
         onAlertsPress={handleAlertsPress}
         alertsCount={3}
+      />
+      <DateFilter 
+        selectedPeriod={selectedPeriod}
+        onPeriodChange={handlePeriodChange}
+        comparisonEnabled={comparisonEnabled}
+        onComparisonToggle={handleComparisonToggle}
       />
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         {/* Audit Score Card */}
