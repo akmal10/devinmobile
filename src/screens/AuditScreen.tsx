@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Modal, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Circle } from 'react-native-svg';
 import CommonHeader from '../components/CommonHeader';
 
-interface FixItemProps {
+interface RecommendationItemProps {
   id: string;
   title: string;
   description: string;
-  impact: 'High' | 'Med' | 'Low';
-  completed: boolean;
-  onToggleComplete: (id: string) => void;
-  onViewDetails: (id: string) => void;
+  priority: 'High' | 'Medium' | 'Low';
+  icon: string;
+  iconColor: string;
+  onReadMore: (id: string) => void;
+  onDismiss: (id: string) => void;
 }
 
 const CircularProgress = ({ score }: { score: number }) => {
@@ -55,105 +56,68 @@ const CircularProgress = ({ score }: { score: number }) => {
   );
 };
 
-const FixItem: React.FC<FixItemProps> = ({ 
+const RecommendationCard: React.FC<RecommendationItemProps> = ({ 
   id, 
   title, 
   description, 
-  impact, 
-  completed, 
-  onToggleComplete, 
-  onViewDetails 
+  priority, 
+  icon,
+  iconColor,
+  onReadMore, 
+  onDismiss 
 }) => {
-  const impactColors = {
-    High: '#EF4444',
-    Med: '#F59E0B',
-    Low: '#10B981'
-  };
-
   return (
-    <View style={styles.fixCard}>
-      <View style={styles.fixHeader}>
-        <TouchableOpacity 
-          style={[styles.checkbox, completed && styles.checkboxCompleted]}
-          onPress={() => onToggleComplete(id)}
-        >
-          {completed && <Ionicons name="checkmark" size={16} color="#fff" />}
-        </TouchableOpacity>
-        <View style={styles.fixContent}>
-          <Text style={[styles.fixTitle, completed && styles.fixTitleCompleted]}>{title}</Text>
-          <Text style={styles.fixDescription}>{description}</Text>
-          <View style={styles.fixFooter}>
-            <View style={[styles.impactTag, { backgroundColor: impactColors[impact] + '20' }]}>
-              <Text style={[styles.impactText, { color: impactColors[impact] }]}>
-                {impact} Impact
-              </Text>
-            </View>
-            <TouchableOpacity onPress={() => onViewDetails(id)} style={styles.detailsButton}>
-              <Text style={styles.detailsButtonText}>View details</Text>
-            </TouchableOpacity>
-          </View>
+    <View style={styles.recommendationCard}>
+      <View style={styles.cardHeader}>
+        <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
+          <Ionicons name={icon as any} size={24} color={iconColor} />
         </View>
+      </View>
+      <Text style={styles.cardTitle}>{title}</Text>
+      <Text style={styles.cardDescription}>{description}</Text>
+      <View style={styles.cardFooter}>
+        <TouchableOpacity style={styles.readMoreButton} onPress={() => onReadMore(id)}>
+          <Text style={styles.readMoreButtonText}>Read More</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => onDismiss(id)}>
+          <Text style={styles.dismissText}>dismiss</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
 export default function AuditScreen() {
-  const [fixes, setFixes] = useState([
+  const [recommendations] = useState([
     {
       id: '1',
       title: 'Add business description',
-      description: 'Your business description is missing. This helps customers understand what you offer.',
-      impact: 'High' as const,
-      completed: false
+      description: 'Lorem ipsum dolor sit amet consectetur. Ultricies scelerisque netus est urna porttitor.',
+      priority: 'High' as const,
+      icon: 'warning',
+      iconColor: '#EF4444'
     },
     {
       id: '2',
-      title: 'Upload more photos',
-      description: 'Add at least 5 high-quality photos to showcase your business.',
-      impact: 'High' as const,
-      completed: false
+      title: 'Add 3 more photos',
+      description: 'Lorem ipsum dolor sit amet consectetur. Ultricies scelerisque netus est urna porttitor.',
+      priority: 'Medium' as const,
+      icon: 'bulb',
+      iconColor: '#F59E0B'
     },
     {
       id: '3',
-      title: 'Verify phone number',
-      description: 'Verify your business phone number to improve customer trust.',
-      impact: 'Med' as const,
-      completed: false
-    },
-    {
-      id: '4',
-      title: 'Update business hours',
-      description: 'Ensure your business hours are accurate and up-to-date.',
-      impact: 'Med' as const,
-      completed: false
-    },
-    {
-      id: '5',
-      title: 'Add website URL',
-      description: 'Link to your website to drive more traffic and conversions.',
-      impact: 'Low' as const,
-      completed: false
+      title: 'Add more services',
+      description: 'Lorem ipsum dolor sit amet consectetur. Ultricies scelerisque netus est urna porttitor.',
+      priority: 'Low' as const,
+      icon: 'bulb-outline',
+      iconColor: '#10B981'
     }
   ]);
 
-  const [completedFixes] = useState([
-    {
-      id: 'c1',
-      title: 'Business category selected',
-      description: 'Primary business category has been set.',
-      completedAt: '2 days ago'
-    },
-    {
-      id: 'c2',
-      title: 'Address verified',
-      description: 'Business address has been verified.',
-      completedAt: '1 week ago'
-    }
-  ]);
-
-  const [showCompleted, setShowCompleted] = useState(false);
-  const [cooldownTime] = useState('3d 4h'); // Mock cooldown
+  const [selectedFilter, setSelectedFilter] = useState('All');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
 
   const handleAlertsPress = () => {
     console.log('Alerts pressed');
@@ -163,26 +127,28 @@ export default function AuditScreen() {
     Alert.alert('Re-run Audit', 'Audit will be re-run to check for latest changes.');
   };
 
-  const handleToggleComplete = (id: string) => {
-    setFixes(prevFixes => 
-      prevFixes.map(fix => 
-        fix.id === id ? { ...fix, completed: !fix.completed } : fix
-      )
-    );
-    Alert.alert('Success', 'Fix status updated!');
+  const handleReadMore = (id: string) => {
+    const recommendation = recommendations.find(r => r.id === id);
+    setSelectedRecommendation(recommendation);
+    setModalVisible(true);
   };
 
-  const handleViewDetails = (id: string) => {
-    console.log(`View details for fix: ${id}`);
+  const handleDismiss = (id: string) => {
+    Alert.alert('Dismissed', `Recommendation ${id} has been dismissed.`);
   };
 
   const handleViewEditGoogle = () => {
     console.log('Navigate to Business Profile Viewer');
   };
 
-  const activeFixes = fixes.filter(fix => !fix.completed);
   const auditScore = 85;
   const lastRunTime = 'Jul 20, 2025';
+  
+  const filteredRecommendations = selectedFilter === 'All' 
+    ? recommendations 
+    : recommendations.filter(r => r.priority === selectedFilter.replace(' Priority', ''));
+
+  const filters = ['All', 'High Priority', 'Medium Priority', 'Low Priority'];
 
   return (
     <View style={styles.container}>
@@ -193,7 +159,7 @@ export default function AuditScreen() {
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         {/* Audit Score Card */}
         <View style={styles.auditScoreCard}>
-          <Text style={styles.cardTitle}>Audit Score Card</Text>
+          <Text style={styles.auditCardTitle}>Audit Score Card</Text>
           
           <CircularProgress score={auditScore} />
           
@@ -210,56 +176,60 @@ export default function AuditScreen() {
           </Text>
         </View>
 
-        {/* Top 5 Fixes */}
+        {/* Recommendations */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Top Fixes ({activeFixes.length})</Text>
-          {activeFixes.map(fix => (
-            <FixItem
-              key={fix.id}
-              id={fix.id}
-              title={fix.title}
-              description={fix.description}
-              impact={fix.impact}
-              completed={fix.completed}
-              onToggleComplete={handleToggleComplete}
-              onViewDetails={handleViewDetails}
-            />
-          ))}
-        </View>
-
-        {/* Completed Fixes */}
-        <View style={styles.section}>
-          <TouchableOpacity 
-            style={styles.accordionHeader}
-            onPress={() => setShowCompleted(!showCompleted)}
-          >
-            <Text style={styles.accordionTitle}>
-              Completed fixes ({completedFixes.length})
-            </Text>
-            <Ionicons 
-              name={showCompleted ? "chevron-up" : "chevron-down"} 
-              size={20} 
-              color="#6B7280" 
-            />
-          </TouchableOpacity>
-          {!showCompleted && completedFixes.length > 0 && (
-            <Text style={styles.lastCompletedText}>
-              Last: {completedFixes[0].title} • {completedFixes[0].completedAt}
-            </Text>
-          )}
-          {showCompleted && (
-            <View style={styles.completedList}>
-              {completedFixes.map(fix => (
-                <View key={fix.id} style={styles.completedItem}>
-                  <Ionicons name="checkmark-circle" size={20} color="#10B981" />
-                  <View style={styles.completedContent}>
-                    <Text style={styles.completedTitle}>{fix.title}</Text>
-                    <Text style={styles.completedTime}>{fix.completedAt}</Text>
-                  </View>
-                </View>
-              ))}
+          <View style={styles.recommendationHeader}>
+            <Text style={styles.sectionTitle}>Recommendation</Text>
+            <View style={styles.counterBadge}>
+              <Text style={styles.counterText}>211</Text>
+              <Ionicons name="bar-chart" size={16} color="#fff" style={styles.counterIcon} />
+              <Text style={styles.counterText}>35</Text>
             </View>
-          )}
+          </View>
+          
+          {/* Filter Tabs */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
+            {filters.map((filter) => (
+              <TouchableOpacity
+                key={filter}
+                style={[
+                  styles.filterTab,
+                  selectedFilter === filter && styles.filterTabActive
+                ]}
+                onPress={() => setSelectedFilter(filter)}
+              >
+                <Text style={[
+                  styles.filterTabText,
+                  selectedFilter === filter && styles.filterTabTextActive
+                ]}>
+                  {filter}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          {/* Recommendation Cards */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.cardsContainer}>
+            <TouchableOpacity style={styles.navArrow}>
+              <Ionicons name="chevron-back" size={24} color="#6B7280" />
+            </TouchableOpacity>
+            {filteredRecommendations.map((recommendation) => (
+              <RecommendationCard
+                key={recommendation.id}
+                id={recommendation.id}
+                title={recommendation.title}
+                description={recommendation.description}
+                priority={recommendation.priority}
+                icon={recommendation.icon}
+                iconColor={recommendation.iconColor}
+                onReadMore={handleReadMore}
+                onDismiss={handleDismiss}
+              />
+            ))}
+            <TouchableOpacity style={styles.navArrow}>
+              <Ionicons name="chevron-forward" size={24} color="#6B7280" />
+            </TouchableOpacity>
+          </ScrollView>
         </View>
 
         {/* Business Profile Summary */}
@@ -292,6 +262,39 @@ export default function AuditScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Read More Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {selectedRecommendation?.title}
+              </Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Ionicons name="close" size={24} color="#6B7280" />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.modalDescription}>
+              {selectedRecommendation?.description}
+            </Text>
+            <Text style={styles.modalDetailText}>
+              This is detailed information about the recommendation. Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+            </Text>
+            <TouchableOpacity 
+              style={styles.modalCloseButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.modalCloseButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -325,7 +328,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  cardTitle: {
+  auditCardTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#1F2937',
@@ -386,145 +389,163 @@ const styles = StyleSheet.create({
     color: '#1F2937',
     marginBottom: 12,
   },
-  fixCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  fixHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#D1D5DB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-    marginTop: 2,
-  },
-  checkboxCompleted: {
-    backgroundColor: '#10B981',
-    borderColor: '#10B981',
-  },
-  fixContent: {
-    flex: 1,
-  },
-  fixTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1F2937',
-    marginBottom: 4,
-  },
-  fixTitleCompleted: {
-    textDecorationLine: 'line-through',
-    color: '#6B7280',
-  },
-  fixDescription: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 12,
-    lineHeight: 20,
-  },
-  fixFooter: {
+  recommendationHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 16,
   },
-  impactTag: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  impactText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  detailsButton: {
+  counterBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2563EB',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#2563EB',
+    borderRadius: 16,
   },
-  detailsButtonText: {
-    fontSize: 12,
+  counterText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  counterIcon: {
+    marginHorizontal: 4,
+  },
+  filterContainer: {
+    marginBottom: 16,
+  },
+  filterTab: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#F3F4F6',
+    marginRight: 8,
+  },
+  filterTabActive: {
+    backgroundColor: '#2563EB',
+  },
+  filterTabText: {
+    fontSize: 14,
     fontWeight: '500',
-    color: '#2563EB',
+    color: '#6B7280',
   },
-  accordionHeader: {
+  filterTabTextActive: {
+    color: '#fff',
+  },
+  cardsContainer: {
+    flexDirection: 'row',
+  },
+  navArrow: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 40,
+    height: 200,
+  },
+  recommendationCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginRight: 12,
+    width: 280,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  cardHeader: {
+    marginBottom: 12,
+  },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  cardDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  cardFooter: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 1,
-    elevation: 1,
   },
-  accordionTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1F2937',
-  },
-  lastCompletedText: {
-    fontSize: 14,
-    color: '#6B7280',
+  readMoreButton: {
+    backgroundColor: '#2563EB',
     paddingHorizontal: 16,
-    marginBottom: 8,
-  },
-  completedList: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  completedItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
     paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderRadius: 6,
   },
-  completedContent: {
-    marginLeft: 12,
+  readMoreButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  dismissText: {
+    color: '#6B7280',
+    fontSize: 14,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 24,
+    margin: 20,
+    maxHeight: '80%',
+    width: '90%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1F2937',
     flex: 1,
   },
-  completedTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#1F2937',
-    marginBottom: 2,
-  },
-  completedTime: {
-    fontSize: 12,
+  modalDescription: {
+    fontSize: 16,
     color: '#6B7280',
+    marginBottom: 16,
+    lineHeight: 24,
+  },
+  modalDetailText: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  modalCloseButton: {
+    backgroundColor: '#2563EB',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  modalCloseButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   profileCard: {
     backgroundColor: '#fff',
