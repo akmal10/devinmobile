@@ -298,27 +298,34 @@ export default function AuditScreen() {
             onComparisonToggle={handleComparisonToggle}
           />
 
-          {/* Recommendation Cards */}
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
-            style={[styles.cardsContainer, { maxWidth: '100%' }]}
-            contentContainerStyle={styles.cardsContentContainer}
-          >
-            {filteredRecommendations.map((recommendation) => (
-              <RecommendationCard
-                key={recommendation.id}
-                id={recommendation.id}
-                title={recommendation.title}
-                description={recommendation.description}
-                priority={recommendation.priority}
-                icon={recommendation.icon}
-                iconColor={recommendation.iconColor}
-                onReadMore={handleReadMore}
-                onDismiss={handleDismiss}
-              />
-            ))}
-          </ScrollView>
+          {/* Recommendation Cards with Arrow Overlay */}
+          <View style={styles.sliderContainer}>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false} 
+              style={[styles.cardsContainer, { maxWidth: '100%' }]}
+              contentContainerStyle={styles.cardsContentContainer}
+            >
+              {filteredRecommendations.map((recommendation) => (
+                <RecommendationCard
+                  key={recommendation.id}
+                  id={recommendation.id}
+                  title={recommendation.title}
+                  description={recommendation.description}
+                  priority={recommendation.priority}
+                  icon={recommendation.icon}
+                  iconColor={recommendation.iconColor}
+                  onReadMore={handleReadMore}
+                  onDismiss={handleDismiss}
+                />
+              ))}
+            </ScrollView>
+            
+            {/* Arrow Overlay Indicator */}
+            <View style={styles.arrowOverlay}>
+              <Text style={styles.arrowText}>›</Text>
+            </View>
+          </View>
         </View>
 
         {/* Business Summary */}
@@ -814,5 +821,36 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#2563EB',
     marginLeft: 6,
+  },
+  sliderContainer: {
+    position: 'relative',
+    marginTop: 16,
+  },
+  arrowOverlay: {
+    position: 'absolute',
+    right: 16,
+    top: 100,
+    zIndex: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 20,
+    padding: 8,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  arrowText: {
+    fontSize: 24,
+    color: '#6B7280',
+    fontWeight: 'bold',
+    opacity: 0.7,
   },
 });
