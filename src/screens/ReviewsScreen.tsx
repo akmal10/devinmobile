@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CommonHeader from '../components/CommonHeader';
+import AllReviewsScreen from './AllReviewsScreen';
 
 interface RecommendationCardProps {
   id: string;
@@ -76,6 +77,7 @@ export default function ReviewsScreen() {
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   const handleAlertsPress = () => {
     console.log('Alerts pressed');
@@ -89,6 +91,14 @@ export default function ReviewsScreen() {
 
   const handleDismiss = (id: string) => {
     Alert.alert('Dismissed', `Recommendation ${id} has been dismissed.`);
+  };
+
+  const handleCheckAllReviews = () => {
+    setShowAllReviews(true);
+  };
+
+  const handleBackToReviews = () => {
+    setShowAllReviews(false);
   };
 
   const filteredRecommendations = selectedFilter === 'All' 
@@ -144,6 +154,10 @@ export default function ReviewsScreen() {
       trend: null
     }
   ];
+
+  if (showAllReviews) {
+    return <AllReviewsScreen onBack={handleBackToReviews} />;
+  }
 
   return (
     <View style={styles.container}>
@@ -279,7 +293,7 @@ export default function ReviewsScreen() {
               ))}
             </View>
 
-            <TouchableOpacity style={styles.checkAllReviewsButton}>
+            <TouchableOpacity style={styles.checkAllReviewsButton} onPress={handleCheckAllReviews}>
               <Text style={styles.checkAllReviewsButtonText}>Check All Reviews</Text>
             </TouchableOpacity>
           </View>
