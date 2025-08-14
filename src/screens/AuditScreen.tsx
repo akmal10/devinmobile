@@ -302,7 +302,7 @@ export default function AuditScreen() {
           <ScrollView 
             horizontal 
             showsHorizontalScrollIndicator={false} 
-            style={styles.cardsContainer}
+            style={[styles.cardsContainer, { maxWidth: '100%' }]}
             contentContainerStyle={styles.cardsContentContainer}
           >
             {filteredRecommendations.map((recommendation) => (
@@ -548,17 +548,18 @@ const styles = StyleSheet.create({
   },
   cardsContainer: {
     marginTop: 16,
+    width: '100%',
   },
   cardsContentContainer: {
     paddingLeft: 16,
-    paddingRight: 250,
+    paddingRight: 60,
   },
   recommendationCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
-    marginRight: 80,
-    width: 600,
+    marginRight: 20,
+    width: '95%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
