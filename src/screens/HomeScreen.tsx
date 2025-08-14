@@ -364,6 +364,7 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Grid Ranking</Text>
           <View style={styles.gridWidget}>
+            <View style={styles.gridProgressBar} />
             <Text style={styles.lastRunDate}>Last run: Jun 19, 2025</Text>
             <View style={styles.gridStats}>
               <View style={styles.mainGridStat}>
@@ -763,6 +764,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  gridProgressBar: {
+    height: 4,
+    backgroundColor: '#2563EB',
+    borderRadius: 2,
+    marginBottom: 16,
   },
   lastRunDate: {
     fontSize: 14,
