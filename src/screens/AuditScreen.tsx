@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Svg, { Circle } from 'react-native-svg';
 import CommonHeader from '../components/CommonHeader';
 
 interface FixItemProps {
@@ -12,6 +13,47 @@ interface FixItemProps {
   onToggleComplete: (id: string) => void;
   onViewDetails: (id: string) => void;
 }
+
+const CircularProgress = ({ score }: { score: number }) => {
+  const size = 120;
+  const strokeWidth = 12;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const progress = (score / 100) * circumference;
+
+  return (
+    <View style={styles.circularProgressContainer}>
+      <Svg width={size} height={size}>
+        {/* Background circle */}
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="#E5E7EB"
+          strokeWidth={strokeWidth}
+          fill="none"
+        />
+        {/* Progress circle */}
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="#2563EB"
+          strokeWidth={strokeWidth}
+          fill="none"
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference - progress}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      </Svg>
+      <View style={styles.circularProgressText}>
+        <Text style={styles.scoreNumber}>{score}</Text>
+        <Text style={styles.scoreLabel}>Good</Text>
+      </View>
+    </View>
+  );
+};
 
 const FixItem: React.FC<FixItemProps> = ({ 
   id, 
@@ -139,8 +181,8 @@ export default function AuditScreen() {
   };
 
   const activeFixes = fixes.filter(fix => !fix.completed);
-  const auditScore = 78;
-  const lastRunTime = '2 hours ago';
+  const auditScore = 85;
+  const lastRunTime = 'Jul 20, 2025';
 
   return (
     <View style={styles.container}>
@@ -149,28 +191,23 @@ export default function AuditScreen() {
         alertsCount={3}
       />
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
-        {/* Header Summary */}
-        <View style={styles.headerSummary}>
-          <View style={styles.scoreContainer}>
-            <View style={styles.scoreBadge}>
-              <Text style={styles.scoreText}>{auditScore}</Text>
-              <Text style={styles.scoreSubtext}>/100</Text>
-            </View>
-            <View style={styles.scoreInfo}>
-              <Text style={styles.scoreTitle}>Audit Score</Text>
-              <Text style={styles.lastRun}>Last run: {lastRunTime}</Text>
-            </View>
-          </View>
-          <TouchableOpacity style={styles.rerunButton} onPress={handleRerunAudit}>
-            <Ionicons name="refresh" size={16} color="#2563EB" />
-            <Text style={styles.rerunButtonText}>Re-run audit</Text>
+        {/* Audit Score Card */}
+        <View style={styles.auditScoreCard}>
+          <Text style={styles.cardTitle}>Audit Score Card</Text>
+          
+          <CircularProgress score={auditScore} />
+          
+          <Text style={styles.lastAuditDate}>
+            Last Audit Date = {lastRunTime}
+          </Text>
+          
+          <TouchableOpacity style={styles.runNewAuditButton} onPress={handleRerunAudit}>
+            <Text style={styles.runNewAuditButtonText}>Run New Audit</Text>
           </TouchableOpacity>
-          {cooldownTime && (
-            <View style={styles.cooldownChip}>
-              <Ionicons name="time" size={12} color="#6B7280" />
-              <Text style={styles.cooldownText}>Available in {cooldownTime}</Text>
-            </View>
-          )}
+          
+          <Text style={styles.nextAuditText}>
+            Next audit allowed in 5 days
+          </Text>
         </View>
 
         {/* Top 5 Fixes */}
@@ -271,84 +308,74 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 32,
   },
-  headerSummary: {
+  auditScoreCard: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: '#2563EB',
+    padding: 24,
     marginBottom: 24,
+    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  scoreContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  scoreBadge: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#2563EB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-  },
-  scoreText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#fff',
-  },
-  scoreSubtext: {
-    fontSize: 12,
-    color: '#E5E7EB',
-  },
-  scoreInfo: {
-    flex: 1,
-  },
-  scoreTitle: {
+  cardTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#1F2937',
-    marginBottom: 4,
-  },
-  lastRun: {
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  rerunButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#EBF4FF',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  rerunButtonText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#2563EB',
-    marginLeft: 6,
-  },
-  cooldownChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F3F4F6',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    marginBottom: 24,
     alignSelf: 'flex-start',
   },
-  cooldownText: {
-    fontSize: 12,
+  circularProgressContainer: {
+    position: 'relative',
+    marginBottom: 24,
+  },
+  circularProgressText: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scoreNumber: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  scoreLabel: {
+    fontSize: 16,
     color: '#6B7280',
-    marginLeft: 4,
+    fontWeight: '500',
+  },
+  lastAuditDate: {
+    fontSize: 16,
+    color: '#1F2937',
+    marginBottom: 20,
+    fontWeight: '500',
+  },
+  runNewAuditButton: {
+    backgroundColor: '#2563EB',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  runNewAuditButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  nextAuditText: {
+    fontSize: 14,
+    color: '#6B7280',
   },
   section: {
     marginBottom: 24,
