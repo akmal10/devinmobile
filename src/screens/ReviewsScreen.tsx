@@ -220,6 +220,70 @@ export default function ReviewsScreen() {
             ))}
           </ScrollView>
         </View>
+
+        {/* Reviews Summary */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Reviews Summary</Text>
+          
+          {/* Summary Filter Tabs */}
+          <View style={styles.summaryFilterContainer}>
+            <TouchableOpacity style={[styles.summaryFilterTab, styles.summaryFilterTabActive]}>
+              <Text style={[styles.summaryFilterTabText, styles.summaryFilterTabTextActive]}>Rating</Text>
+            </TouchableOpacity>
+            <View style={styles.totalReviewsBadge}>
+              <Text style={styles.totalReviewsText}>Total Reviews 145</Text>
+            </View>
+          </View>
+
+          {/* Rating Summary Card */}
+          <View style={styles.ratingSummaryCard}>
+            <View style={styles.ratingDisplayContainer}>
+              <Text style={styles.ratingValue}>4.90</Text>
+              <View style={styles.starsContainer}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Ionicons key={star} name="star" size={20} color="#FCD34D" />
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.ratingBreakdownContainer}>
+              <Text style={styles.reviewLabel}>Review</Text>
+              
+              {[
+                { stars: 5, percentage: 98, color: '#FCD34D' },
+                { stars: 4, percentage: 1, color: '#FCD34D' },
+                { stars: 3, percentage: 0, color: '#E5E7EB' },
+                { stars: 2, percentage: 0, color: '#E5E7EB' },
+                { stars: 1, percentage: 1, color: '#FCD34D' }
+              ].map((rating) => (
+                <View key={rating.stars} style={styles.ratingRow}>
+                  <View style={styles.ratingRowLeft}>
+                    <Text style={styles.starNumber}>{rating.stars}</Text>
+                    <Ionicons name="star" size={16} color="#FCD34D" />
+                  </View>
+                  <View style={styles.progressBarContainer}>
+                    <View style={styles.progressBarBackground}>
+                      <View 
+                        style={[
+                          styles.progressBarFill, 
+                          { 
+                            width: `${rating.percentage}%`,
+                            backgroundColor: rating.color
+                          }
+                        ]} 
+                      />
+                    </View>
+                  </View>
+                  <Text style={styles.percentageText}>{rating.percentage} %</Text>
+                </View>
+              ))}
+            </View>
+
+            <TouchableOpacity style={styles.checkAllReviewsButton}>
+              <Text style={styles.checkAllReviewsButtonText}>Check All Reviews</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </ScrollView>
 
       {/* Read More Modal */}
@@ -494,5 +558,129 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     lineHeight: 20,
     marginBottom: 12,
+  },
+  summaryFilterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  summaryFilterTab: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#f3f4f6',
+    marginRight: 12,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  summaryFilterTabActive: {
+    backgroundColor: '#E5E7EB',
+  },
+  summaryFilterTabText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  summaryFilterTabTextActive: {
+    color: '#1F2937',
+  },
+  totalReviewsBadge: {
+    backgroundColor: '#6B7280',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  totalReviewsText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  ratingSummaryCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  ratingDisplayContainer: {
+    alignItems: 'flex-start',
+    marginBottom: 20,
+  },
+  ratingValue: {
+    fontSize: 48,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  starsContainer: {
+    flexDirection: 'row',
+  },
+  ratingBreakdownContainer: {
+    marginBottom: 20,
+  },
+  reviewLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 16,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  ratingRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 40,
+  },
+  starNumber: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#1F2937',
+    marginRight: 4,
+  },
+  progressBarContainer: {
+    flex: 1,
+    marginHorizontal: 12,
+  },
+  progressBarBackground: {
+    height: 8,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  percentageText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#1F2937',
+    width: 40,
+    textAlign: 'right',
+  },
+  checkAllReviewsButton: {
+    borderWidth: 1,
+    borderColor: '#2563EB',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    minHeight: 44,
+  },
+  checkAllReviewsButtonText: {
+    color: '#2563EB',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
