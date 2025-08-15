@@ -381,8 +381,14 @@ export default function HomeScreen() {
               </View>
             </View>
             <View style={styles.cellStats}>
-              <Text style={styles.cellStat}>Best: Rank 1 - Downtown</Text>
-              <Text style={styles.cellStat}>Worst: Rank 15 - Suburbs</Text>
+              <View style={styles.cellStatColumn}>
+                <Text style={styles.cellStatHeader}>Best Cell</Text>
+                <Text style={styles.cellStatValue}>Rank 1 - Downtown</Text>
+              </View>
+              <View style={styles.cellStatColumn}>
+                <Text style={styles.cellStatHeader}>Worst Cell</Text>
+                <Text style={styles.cellStatValue}>Rank 15 - Suburbs</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -808,11 +814,25 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
   cellStats: {
-    gap: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 16,
   },
-  cellStat: {
+  cellStatColumn: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  cellStatHeader: {
     ...Typography.styles.bodySecondary,
-    color: '#374151',
+    color: '#9CA3AF',
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  cellStatValue: {
+    ...Typography.styles.bodyPrimary,
+    color: '#1F2937',
+    fontWeight: '600' as const,
+    textAlign: 'center',
   },
 
   recommendationContainer: {
