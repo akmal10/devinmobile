@@ -30,7 +30,7 @@ interface ActivityItemProps {
 }
 
 const CircularProgress: React.FC<CircularProgressProps> = ({ score }) => {
-  const size = 80;
+  const size = 100;
   const strokeWidth = 8;
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
