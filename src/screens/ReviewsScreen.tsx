@@ -83,7 +83,6 @@ export default function ReviewsScreen() {
     }
   ]);
 
-  const [selectedFilter, setSelectedFilter] = useState('All');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
   const [showAllReviews, setShowAllReviews] = useState(false);
@@ -120,11 +119,6 @@ export default function ReviewsScreen() {
     setShowAllReviews(false);
   };
 
-  const filteredRecommendations = selectedFilter === 'All' 
-    ? recommendations 
-    : recommendations.filter(r => r.priority === selectedFilter.replace(' Priority', ''));
-
-  const filters = ['All', 'High Priority', 'Medium Priority', 'Low Priority'];
 
   const overviewData = [
     {
@@ -219,37 +213,9 @@ export default function ReviewsScreen() {
 
         {/* Recommendations */}
         <View style={styles.section}>
-          <View style={styles.recommendationHeader}>
-            <Text style={styles.sectionTitle}>Recommendation</Text>
-            <View style={styles.recommendationBadge}>
-              <Text style={styles.recommendationBadgeText}>211 📊 35</Text>
-            </View>
-          </View>
-          
-          {/* Filter Tabs */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
-            {filters.map((filter) => (
-              <TouchableOpacity
-                key={filter}
-                style={[
-                  styles.filterTab,
-                  selectedFilter === filter && styles.filterTabActive
-                ]}
-                onPress={() => setSelectedFilter(filter)}
-              >
-                <Text style={[
-                  styles.filterTabText,
-                  selectedFilter === filter && styles.filterTabTextActive
-                ]}>
-                  {filter}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          {/* Recommendation Cards */}
+          <Text style={styles.sectionTitle}>Recommendations</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recommendationContainer}>
-            {filteredRecommendations.map((recommendation) => (
+            {recommendations.map((recommendation) => (
               <RecommendationCard
                 key={recommendation.id}
                 {...recommendation}
@@ -492,46 +458,8 @@ const styles = StyleSheet.create({
   trendIcon: {
     marginLeft: 4,
   },
-  recommendationHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  recommendationBadge: {
-    backgroundColor: '#2563EB',
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  recommendationBadgeText: {
-    ...Typography.styles.caption,
-    color: '#fff',
-  },
-  filterContainer: {
-    marginBottom: 16,
-  },
-  filterTab: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f3f4f6',
-    marginRight: 8,
-    minHeight: 44,
-    justifyContent: 'center',
-  },
-  filterTabActive: {
-    backgroundColor: '#2563EB',
-  },
-  filterTabText: {
-    ...Typography.styles.bodySecondary,
-    color: '#6B7280',
-  },
-  filterTabTextActive: {
-    color: '#fff',
-  },
   recommendationContainer: {
-    marginBottom: 8,
+    flexDirection: 'row',
   },
   recommendationCard: {
     backgroundColor: '#fff',
