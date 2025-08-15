@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, Image, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CommonHeader from '../components/CommonHeader';
+import { Typography } from '../constants/Typography';
 
 interface MovieReview {
   id: string;
@@ -364,13 +365,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backText: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#2563EB',
     marginLeft: 4,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '600',
+    ...Typography.styles.h2SectionTitle,
     color: '#1F2937',
     position: 'absolute',
     left: 0,
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   headerActionText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#666',
     marginLeft: 4,
   },
@@ -433,8 +433,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   movieTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
     marginBottom: 8,
   },
@@ -444,7 +443,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   criticLabel: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
     marginRight: 8,
   },
@@ -452,7 +451,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   metadata: {
-    fontSize: 12,
+    ...Typography.styles.caption,
     color: '#9CA3AF',
   },
   reviewTextContainer: {
@@ -462,15 +461,13 @@ const styles = StyleSheet.create({
     borderTopColor: '#F3F4F6',
   },
   reviewLabel: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...Typography.styles.bodySecondary,
     color: '#374151',
     marginBottom: 8,
   },
   reviewText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    lineHeight: 20,
     marginBottom: 12,
   },
   replySection: {
@@ -487,9 +484,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   replyButtonText: {
+    ...Typography.styles.buttonSecondary,
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
   },
   repliedButton: {
     backgroundColor: '#10B981',
@@ -498,9 +494,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   repliedButtonText: {
+    ...Typography.styles.buttonSecondary,
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
   },
   replyModalOverlay: {
     flex: 1,
@@ -532,8 +527,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F3F4F6',
   },
   replyModalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
   },
   closeButton: {
@@ -543,8 +537,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   replyLabel: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...Typography.styles.bodySecondary,
     color: '#374151',
     marginBottom: 12,
   },
@@ -553,15 +546,14 @@ const styles = StyleSheet.create({
     borderColor: '#D1D5DB',
     borderRadius: 8,
     padding: 12,
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#374151',
     minHeight: 100,
     marginBottom: 16,
   },
   existingReplyText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    lineHeight: 20,
     padding: 12,
     backgroundColor: '#F9FAFB',
     borderRadius: 8,
@@ -579,9 +571,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#D1D5DB',
   },
   sendButtonText: {
+    ...Typography.styles.buttonPrimary,
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
   sendButtonTextDisabled: {
     color: '#9CA3AF',
@@ -609,8 +600,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   filterTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#333',
     marginBottom: 16,
     textAlign: 'center',
@@ -628,12 +618,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#EBF4FF',
   },
   filterItemText: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#333',
     flex: 1,
   },
   selectedFilterItemText: {
+    ...Typography.styles.bodyPrimary,
     color: '#2563EB',
-    fontWeight: '500',
   },
 });

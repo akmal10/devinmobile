@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Modal, Al
 import { Ionicons } from '@expo/vector-icons';
 import CommonHeader from '../components/CommonHeader';
 import { useLocation } from '../contexts/LocationContext';
+import { Typography } from '../constants/Typography';
 
 export default function SettingsScreen() {
   const { selectedLocation } = useLocation();
@@ -241,8 +242,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   sectionHeader: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#111827',
     marginTop: 24,
     marginBottom: 12,
@@ -277,18 +277,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileName: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#111827',
     marginBottom: 4,
   },
   profileEmail: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
     marginBottom: 2,
   },
   profilePhone: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
   settingRow: {
@@ -311,13 +310,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   settingTitle: {
-    fontSize: 16,
-    fontWeight: '500',
+    ...Typography.styles.bodyPrimary,
     color: '#111827',
     marginBottom: 2,
   },
   settingSubtitle: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
   changeButton: {
@@ -327,9 +325,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   changeButtonText: {
+    ...Typography.styles.buttonSecondary,
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
   },
   planCard: {
     flexDirection: 'row',
@@ -343,13 +340,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   planTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#111827',
     marginBottom: 4,
   },
   planSubtitle: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
     marginBottom: 2,
   },
@@ -360,8 +356,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   planBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
+    ...Typography.styles.buttonSecondary,
     color: '#92400E',
   },
   modalOverlay: {
@@ -379,14 +374,13 @@ const styles = StyleSheet.create({
     maxWidth: 400,
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#111827',
     marginBottom: 8,
     textAlign: 'center',
   },
   modalText: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#6B7280',
     textAlign: 'center',
     marginBottom: 24,
@@ -406,16 +400,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
   },
   cancelButtonText: {
+    ...Typography.styles.buttonPrimary,
     color: '#374151',
-    fontSize: 16,
-    fontWeight: '500',
   },
   confirmButton: {
     backgroundColor: '#DC2626',
   },
   confirmButtonText: {
+    ...Typography.styles.buttonPrimary,
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
   },
 });

@@ -5,6 +5,7 @@ import Svg, { Circle } from 'react-native-svg';
 import CommonHeader from '../components/CommonHeader';
 import DateFilter from '../components/DateFilter';
 import { useDate } from '../contexts/DateContext';
+import { Typography } from '../constants/Typography';
 
 interface CircularProgressProps {
   score: number;
@@ -477,8 +478,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
     marginBottom: 16,
   },
@@ -498,8 +498,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scoreNumber: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    ...Typography.styles.chartMainValue,
     color: '#1F2937',
   },
 
@@ -534,19 +533,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   priorityText: {
-    fontSize: 12,
-    fontWeight: '600',
+    ...Typography.styles.caption,
   },
   cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     marginBottom: 8,
   },
   cardDescription: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    lineHeight: 20,
     marginBottom: 16,
   },
   cardFooter: {
@@ -561,14 +557,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   readMoreButtonText: {
+    ...Typography.styles.buttonSecondary,
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
   },
   dismissText: {
+    ...Typography.styles.buttonSecondary,
     color: '#6B7280',
-    fontSize: 14,
-    fontWeight: '500',
   },
 
   gmbProfileWidget: {
@@ -589,15 +583,13 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F3F4F6',
   },
   widgetSubtitle: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...Typography.styles.bodySecondary,
     color: '#374151',
     marginBottom: 12,
   },
   auditScoreText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    fontWeight: '500',
   },
   businessActivitySection: {
     flex: 1,
@@ -611,22 +603,20 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F9FAFB',
   },
   activityTitle: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#374151',
     flex: 1,
   },
   activityValue: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     marginRight: 8,
   },
   activitySubtitle: {
-    fontSize: 12,
-    fontWeight: '500',
+    ...Typography.styles.caption,
   },
   activityTime: {
-    fontSize: 12,
+    ...Typography.styles.caption,
     color: '#6B7280',
   },
   viewButton: {
@@ -636,9 +626,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   viewButtonText: {
-    fontSize: 12,
+    ...Typography.styles.caption,
     color: '#374151',
-    fontWeight: '500',
   },
 
   reviewWidget: {
@@ -666,8 +655,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   ratingTabText: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...Typography.styles.buttonSecondary,
     color: '#1F2937',
   },
   infoIcon: {
@@ -680,8 +668,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   totalReviewsText: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...Typography.styles.buttonSecondary,
     color: '#fff',
   },
   ratingDisplayContainer: {
@@ -690,9 +677,11 @@ const styles = StyleSheet.create({
   },
   ratingValue: {
     fontSize: 48,
-    fontWeight: 'bold',
+    fontFamily: 'Inter_600SemiBold',
+    fontWeight: '600' as const,
     color: '#1F2937',
     marginBottom: 8,
+    lineHeight: 48 * 1.2,
   },
   starsContainer: {
     flexDirection: 'row',
@@ -702,8 +691,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   reviewLabel: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     marginBottom: 16,
   },
@@ -718,7 +706,7 @@ const styles = StyleSheet.create({
     width: 40,
   },
   starNumber: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#374151',
     marginRight: 4,
   },
@@ -736,7 +724,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   percentageText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#374151',
     width: 50,
     textAlign: 'right',
@@ -750,9 +738,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkAllReviewsButtonText: {
+    ...Typography.styles.buttonPrimary,
     color: '#2563EB',
-    fontSize: 16,
-    fontWeight: '600',
   },
 
   gridWidget: {
@@ -772,7 +759,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   lastRunDate: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
     marginBottom: 16,
   },
@@ -789,13 +776,12 @@ const styles = StyleSheet.create({
     minWidth: 120,
   },
   gridRankValue: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    ...Typography.styles.h1PageTitle,
     color: '#fff',
     marginBottom: 4,
   },
   gridRankLabel: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#fff',
     opacity: 0.9,
   },
@@ -813,20 +799,19 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   changeValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    ...Typography.styles.chartMainValue,
     color: '#1F2937',
     marginRight: 4,
   },
   changeLabel: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
   cellStats: {
     gap: 8,
   },
   cellStat: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#374151',
   },
 
@@ -864,13 +849,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   modernActivityTitle: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#1F2937',
-    fontWeight: '500',
     marginBottom: 2,
   },
   modernActivityTime: {
-    fontSize: 12,
+    ...Typography.styles.caption,
     color: '#6B7280',
   },
   modernViewButton: {
@@ -880,9 +864,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   modernViewButtonText: {
-    fontSize: 12,
+    ...Typography.styles.caption,
     color: '#fff',
-    fontWeight: '500',
   },
 
   modalOverlay: {
@@ -910,21 +893,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
     flex: 1,
   },
   modalDescription: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#374151',
     marginBottom: 16,
-    lineHeight: 24,
   },
   modalDetailText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    lineHeight: 20,
     marginBottom: 24,
   },
   modalCloseButton: {
@@ -935,8 +915,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalCloseButtonText: {
+    ...Typography.styles.buttonPrimary,
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
   },
 });

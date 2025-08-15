@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CommonHeader from '../components/CommonHeader';
 import DateFilter from '../components/DateFilter';
 import { useDate } from '../contexts/DateContext';
+import { Typography } from '../constants/Typography';
 import AllReviewsScreen from './AllReviewsScreen';
 
 interface RecommendationCardProps {
@@ -438,8 +439,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
+    ...Typography.styles.h2SectionTitle,
     color: '#1F2937',
     marginBottom: 16,
   },
@@ -467,10 +467,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   overviewCardTitle: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    lineHeight: 18,
   },
   overviewCardContent: {
     flex: 1,
@@ -482,13 +480,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   overviewCardValue: {
-    fontSize: 24,
-    fontWeight: '600',
+    ...Typography.styles.chartMainValue,
     color: '#2563EB',
     marginRight: 4,
   },
   overviewCardSubtitle: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#6B7280',
     marginRight: 4,
   },
@@ -508,9 +505,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   recommendationBadgeText: {
+    ...Typography.styles.caption,
     color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
   },
   filterContainer: {
     marginBottom: 16,
@@ -528,8 +524,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2563EB',
   },
   filterTabText: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
   filterTabTextActive: {
@@ -566,15 +561,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     marginBottom: 8,
   },
   cardDescription: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    lineHeight: 20,
     marginBottom: 16,
   },
   cardFooter: {
@@ -591,13 +584,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   readMoreButtonText: {
+    ...Typography.styles.buttonSecondary,
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
   },
   dismissText: {
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    fontSize: 14,
     textDecorationLine: 'underline',
   },
   modalOverlay: {
@@ -630,8 +622,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E5E7EB',
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
     flex: 1,
     marginRight: 16,
@@ -647,15 +638,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalDescription: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#374151',
-    lineHeight: 24,
     marginBottom: 16,
   },
   modalDetailText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    lineHeight: 20,
     marginBottom: 12,
   },
   summaryFilterContainer: {
@@ -676,8 +665,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E7EB',
   },
   summaryFilterTabText: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
   summaryFilterTabTextActive: {
@@ -690,9 +678,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   totalReviewsText: {
+    ...Typography.styles.caption,
     color: '#fff',
-    fontSize: 12,
-    fontWeight: '500',
   },
   ratingSummaryCard: {
     backgroundColor: '#fff',
@@ -714,10 +701,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   ratingValue: {
+    fontFamily: 'Inter_600SemiBold',
     fontSize: 48,
-    fontWeight: '600',
+    fontWeight: '600' as const,
     color: '#1F2937',
     marginBottom: 8,
+    lineHeight: 48 * 1.2,
   },
   starsContainer: {
     flexDirection: 'row',
@@ -726,8 +715,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   reviewLabel: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     marginBottom: 16,
   },
@@ -742,8 +730,7 @@ const styles = StyleSheet.create({
     width: 40,
   },
   starNumber: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#1F2937',
     marginRight: 4,
   },
@@ -762,8 +749,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   percentageText: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#1F2937',
     width: 40,
     textAlign: 'right',
@@ -778,9 +764,8 @@ const styles = StyleSheet.create({
     minHeight: 44,
   },
   checkAllReviewsButtonText: {
+    ...Typography.styles.buttonPrimary,
     color: '#2563EB',
-    fontSize: 16,
-    fontWeight: '500',
   },
   sentimentCard: {
     backgroundColor: '#fff',
@@ -809,8 +794,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   barLabel: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#374151',
     width: 60,
   },
@@ -835,8 +819,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#3B82F6',
   },
   barValue: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...Typography.styles.bodySecondary,
     color: '#1F2937',
     width: 40,
     textAlign: 'right',
@@ -860,13 +843,11 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   sentimentLabel: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#374151',
-    fontWeight: '500',
   },
   sentimentValue: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
-    fontWeight: '600',
   },
 });

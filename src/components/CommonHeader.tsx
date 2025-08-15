@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, Image } from
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocation } from '../contexts/LocationContext';
+import { Typography } from '../constants/Typography';
 
 interface CommonHeaderProps {
   onAlertsPress: () => void;
@@ -143,9 +144,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   locationText: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#2563EB',
-    fontWeight: '600',
     marginRight: 8,
     textAlign: 'center',
   },
@@ -170,9 +170,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   badgeText: {
+    ...Typography.styles.caption,
     color: '#1F2937',
-    fontSize: 12,
-    fontWeight: '600',
   },
   modalOverlay: {
     flex: 1,
@@ -197,8 +196,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   dropdownTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#333',
     marginBottom: 16,
     textAlign: 'center',
@@ -216,12 +214,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f8ff',
   },
   dropdownItemText: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#333',
     flex: 1,
   },
   selectedItemText: {
+    ...Typography.styles.bodyPrimary,
     color: '#007AFF',
-    fontWeight: '500',
   },
 });

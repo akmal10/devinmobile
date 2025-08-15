@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Animated, Dimensions, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
+import { Typography } from '../constants/Typography';
 
 interface DateFilterProps {
   selectedPeriod?: string;
@@ -233,9 +234,9 @@ export default function DateFilter({
                         arrowColor: '#2563EB',
                         monthTextColor: '#1F2937',
                         indicatorColor: '#2563EB',
-                        textDayFontWeight: '500',
-                        textMonthFontWeight: '600',
-                        textDayHeaderFontWeight: '500',
+                        textDayFontWeight: '500' as const,
+                        textMonthFontWeight: '600' as const,
+                        textDayHeaderFontWeight: '500' as const,
                       }}
                     />
                     
@@ -340,8 +341,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   filterText: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#2563EB',
     marginRight: 8,
   },
@@ -385,8 +385,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f0f0f0',
   },
   sheetTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
   },
   sheetContent: {
@@ -400,8 +399,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   sectionLabel: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     marginBottom: 12,
   },
@@ -419,13 +417,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#EBF4FF',
   },
   optionText: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     flex: 1,
   },
   selectedOptionText: {
+    ...Typography.styles.bodyPrimary,
     color: '#2563EB',
-    fontWeight: '500',
   },
   sheetActions: {
     flexDirection: 'row',
@@ -452,8 +450,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   clearButtonText: {
-    fontSize: 16,
-    fontWeight: '500',
+    ...Typography.styles.buttonSecondary,
     color: '#6B7280',
   },
   applyButton: {
@@ -466,8 +463,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   applyButtonText: {
-    fontSize: 16,
-    fontWeight: '500',
+    ...Typography.styles.buttonPrimary,
     color: '#fff',
   },
   calendarHeader: {
@@ -484,14 +480,12 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   backButtonText: {
-    fontSize: 16,
+    ...Typography.styles.buttonSecondary,
     color: '#2563EB',
-    fontWeight: '500',
     marginLeft: 4,
   },
   calendarTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     flex: 1,
   },
@@ -503,9 +497,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedRangeText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#2563EB',
-    fontWeight: '500',
   },
   disabledButton: {
     backgroundColor: '#9CA3AF',

@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CommonHeader from '../components/CommonHeader';
 import DateFilter from '../components/DateFilter';
 import { useDate } from '../contexts/DateContext';
+import { Typography } from '../constants/Typography';
 
 const KEYWORDS = [
   'Restaurant near me',
@@ -290,13 +291,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   summaryTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
     marginBottom: 4,
   },
   lastRunDate: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
   summaryStats: {
@@ -312,13 +312,14 @@ const styles = StyleSheet.create({
     minWidth: 120,
   },
   averageRank: {
+    ...Typography.styles.chartMainValue,
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: '700' as const,
     color: '#fff',
     marginBottom: 4,
   },
   averageRankLabel: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#fff',
     opacity: 0.9,
   },
@@ -336,13 +337,12 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   trendValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    ...Typography.styles.chartMainValue,
     color: '#1F2937',
     marginRight: 4,
   },
   trendLabel: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
   cellStats: {
@@ -354,13 +354,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   cellStatLabel: {
-    fontSize: 12,
+    ...Typography.styles.caption,
     color: '#6B7280',
     marginBottom: 4,
   },
   cellStatValue: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
   },
 
@@ -368,8 +367,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
     marginBottom: 12,
   },
@@ -393,13 +391,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F3F4F6',
   },
   detailLabel: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
     flex: 1,
   },
   detailValue: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     flex: 1,
     textAlign: 'right',
@@ -413,9 +410,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   keywordText: {
-    fontSize: 14,
+    ...Typography.styles.buttonSecondary,
     color: '#2563EB',
-    fontWeight: '500',
     marginRight: 4,
   },
 
@@ -429,9 +425,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryButtonText: {
+    ...Typography.styles.buttonPrimary,
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
   secondaryButton: {
     backgroundColor: '#fff',
@@ -444,9 +439,8 @@ const styles = StyleSheet.create({
     borderColor: '#2563EB',
   },
   secondaryButtonText: {
+    ...Typography.styles.bodyPrimary,
     color: '#2563EB',
-    fontSize: 16,
-    fontWeight: '500',
     marginRight: 8,
   },
   cooldownChip: {
@@ -458,9 +452,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   cooldownText: {
-    fontSize: 12,
+    ...Typography.styles.caption,
     color: '#92400E',
-    fontWeight: '500',
   },
 
   timeFilters: {
@@ -481,9 +474,8 @@ const styles = StyleSheet.create({
     borderColor: '#2563EB',
   },
   timeFilterText: {
-    fontSize: 14,
+    ...Typography.styles.buttonSecondary,
     color: '#6B7280',
-    fontWeight: '500',
   },
   activeTimeFilterText: {
     color: '#fff',
@@ -509,14 +501,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   historyDate: {
+    ...Typography.styles.caption,
     fontSize: 10,
     color: '#6B7280',
     textAlign: 'center',
     maxWidth: 60,
   },
   currentDate: {
-    fontSize: 20,
-    fontWeight: '600',
+    ...Typography.styles.h2SectionTitle,
     color: '#1F2937',
     marginBottom: 16,
   },
@@ -533,13 +525,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   rankValue: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    ...Typography.styles.h1PageTitle,
     color: '#fff',
     marginBottom: 4,
   },
   rankLabel: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#fff',
     opacity: 0.9,
   },
@@ -557,13 +548,12 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   changeValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    ...Typography.styles.h2SectionTitle,
     color: '#1F2937',
     marginRight: 4,
   },
   changeLabel: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
 
@@ -577,14 +567,13 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
   },
   mapPlaceholderText: {
-    fontSize: 16,
-    fontWeight: '500',
+    ...Typography.styles.bodyPrimary,
     color: '#6B7280',
     marginTop: 12,
     marginBottom: 4,
   },
   mapPlaceholderSubtext: {
-    fontSize: 12,
+    ...Typography.styles.caption,
     color: '#9CA3AF',
     textAlign: 'center',
   },
@@ -602,11 +591,10 @@ const styles = StyleSheet.create({
     borderLeftColor: '#F59E0B',
   },
   tipText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#92400E',
     marginLeft: 12,
     flex: 1,
-    lineHeight: 20,
   },
 
   modalOverlay: {
@@ -629,8 +617,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   dropdownTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
     marginBottom: 16,
     textAlign: 'center',
@@ -648,12 +635,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#EBF4FF',
   },
   dropdownItemText: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     flex: 1,
   },
   selectedItemText: {
+    ...Typography.styles.bodyPrimary,
     color: '#2563EB',
-    fontWeight: '500',
   },
 });

@@ -5,6 +5,7 @@ import Svg, { Circle } from 'react-native-svg';
 import CommonHeader from '../components/CommonHeader';
 import DateFilter from '../components/DateFilter';
 import { useDate } from '../contexts/DateContext';
+import { Typography } from '../constants/Typography';
 
 interface RecommendationItemProps {
   id: string;
@@ -493,8 +494,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   auditCardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
     marginBottom: 24,
     alignSelf: 'flex-start',
@@ -513,20 +513,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scoreNumber: {
+    ...Typography.styles.chartMainValue,
     fontSize: 32,
-    fontWeight: 'bold',
     color: '#1F2937',
   },
   scoreLabel: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#6B7280',
-    fontWeight: '500',
   },
   lastAuditDate: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#1F2937',
     marginBottom: 20,
-    fontWeight: '500',
   },
   runNewAuditButton: {
     backgroundColor: '#2563EB',
@@ -536,20 +534,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   runNewAuditButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...Typography.styles.buttonPrimary,
     color: '#fff',
   },
   nextAuditText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
   section: {
     marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
     marginBottom: 12,
   },
@@ -587,15 +583,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...Typography.styles.buttonPrimary,
     color: '#1F2937',
     marginBottom: 8,
   },
   cardDescription: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    lineHeight: 20,
     marginBottom: 16,
   },
   cardFooter: {
@@ -610,13 +604,12 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   readMoreButtonText: {
+    ...Typography.styles.buttonSecondary,
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
   },
   dismissText: {
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    fontSize: 14,
   },
   modalOverlay: {
     flex: 1,
@@ -639,21 +632,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    ...Typography.styles.h3CardTitle,
     color: '#1F2937',
     flex: 1,
   },
   modalDescription: {
-    fontSize: 16,
+    ...Typography.styles.bodyPrimary,
     color: '#6B7280',
     marginBottom: 16,
-    lineHeight: 24,
   },
   modalDetailText: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
-    lineHeight: 20,
     marginBottom: 24,
   },
   modalCloseButton: {
@@ -663,9 +653,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalCloseButtonText: {
+    ...Typography.styles.buttonPrimary,
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
   summaryGrid: {
     flexDirection: 'row',
@@ -691,8 +680,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   summaryWidgetTitle: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
   summaryWidgetContent: {
@@ -701,17 +689,15 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   summaryWidgetValue: {
-    fontSize: 24,
-    fontWeight: '600',
+    ...Typography.styles.chartMainValue,
     color: '#2563EB',
   },
   starIcon: {
     marginLeft: 4,
   },
   summaryWidgetSubtitle: {
-    fontSize: 12,
+    ...Typography.styles.caption,
     color: '#6B7280',
-    lineHeight: 16,
   },
   activityGrid: {
     flexDirection: 'row',
@@ -743,22 +729,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   activityWidgetTitle: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
   },
   activityWidgetContent: {
     marginBottom: 4,
   },
   activityWidgetValue: {
-    fontSize: 24,
-    fontWeight: '600',
+    ...Typography.styles.chartMainValue,
     color: '#1F2937',
   },
   activityWidgetSubtitle: {
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: '500',
+    ...Typography.styles.caption,
   },
   positiveChange: {
     color: '#10B981',
@@ -788,13 +770,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F3F4F6',
   },
   profileLabel: {
-    fontSize: 14,
+    ...Typography.styles.bodySecondary,
     color: '#6B7280',
     flex: 1,
   },
   profileValue: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#1F2937',
   },
   verificationBadge: {
@@ -802,8 +783,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   verificationText: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.bodySecondary,
     color: '#10B981',
     marginLeft: 4,
   },
@@ -817,8 +797,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   editGoogleButtonText: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...Typography.styles.buttonSecondary,
     color: '#2563EB',
     marginLeft: 6,
   },
@@ -848,9 +827,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   arrowText: {
-    fontSize: 24,
+    ...Typography.styles.chartMainValue,
     color: '#6B7280',
-    fontWeight: 'bold',
     opacity: 0.7,
   },
 });
